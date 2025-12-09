@@ -11,7 +11,7 @@ export const ImageLogo = () => {
   return (
     <a href="/" className="flex items-center gap-2">
       {!loaded && !error && (
-        <div className="w-[170px] h-[59px] bg-gray-200 animate-pulse rounded-md" />
+        <div className="w-[170px] h-[59px] bg-white/90 animate-pulse rounded-md" />
       )}
 
       {!error ? (

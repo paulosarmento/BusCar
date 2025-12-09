@@ -7,7 +7,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { translations } from "@/lib/translations";
 import Link from "next/link";
 import { WA_LINK } from "@/lib/whatsApp";
-import { ImageLogo } from "./ImagemLogo";
+import { ImageLogo } from "./ImageLogo";
 
 export default function Header() {
   const { language } = useLanguage();
