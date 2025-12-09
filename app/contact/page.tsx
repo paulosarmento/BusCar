@@ -135,11 +135,13 @@ export default function Contato() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="font-medium mb-1">Telefone</h3>
-              <p className="text-muted-foreground">(21) 99999-9999</p>
+              <p className="text-muted-foreground">(35) 98433-1369</p>
             </div>
             <div>
               <h3 className="font-medium mb-1">E-mail</h3>
-              <p className="text-muted-foreground">contato@motoristaRJ.com</p>
+              <p className="text-muted-foreground">
+                paulo.cesar.sarmento@hotmail.com
+              </p>
             </div>
             <div>
               <h3 className="font-medium mb-1">Horário de Atendimento</h3>

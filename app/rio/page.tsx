@@ -10,7 +10,7 @@ const destinations = [
     description:
       "Uma das praias mais famosas do Rio, conhecida por suas areias douradas e vida noturna vibrante.",
     image: "/images/copacabana-beach-rio.png",
-    passengers: "15+",
+    passengers: "1-4",
   },
   {
     id: "cristo-redentor",
@@ -18,7 +18,7 @@ const destinations = [
     description:
       "O ícone do Rio de Janeiro, oferecendo vistas panorâmicas espetaculares da cidade.",
     image: "/images/cristo-redentor-rio-de-janeiro.jpg",
-    passengers: "8+",
+    passengers: "1-4",
   },
   {
     id: "ipanema",
@@ -26,7 +26,7 @@ const destinations = [
     description:
       "Praia elegante e charmosa, famosa pela cultura, moda e vibrante vida social.",
     image: "/images/ipanema-beach-rio-de-janeiro.jpg",
-    passengers: "12+",
+    passengers: "1-4",
   },
   {
     id: "galeao",
@@ -50,7 +50,7 @@ const destinations = [
     description:
       "Principal terminal rodoviário do Rio com conexões para todo o Brasil.",
     image: "/images/rodoviario-novo-rio-terminal.jpg",
-    passengers: "1-8",
+    passengers: "1-4",
   },
   {
     id: "monte-verde",
@@ -58,7 +58,7 @@ const destinations = [
     description:
       "Região residencial com vistas incríveis e acesso a diversos bairros.",
     image: "/images/monte-verde-rio-de-janeiro.jpg",
-    passengers: "4-6",
+    passengers: "1-4",
   },
   {
     id: "centro",
@@ -66,7 +66,7 @@ const destinations = [
     description:
       "Coração histórico do Rio com museus, arquitetura colonial e vida cultural.",
     image: "/images/centro-rio-de-janeiro-historic.jpg",
-    passengers: "6+",
+    passengers: "1-4",
   },
 ];
 

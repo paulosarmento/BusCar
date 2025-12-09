@@ -12,7 +12,7 @@ const tours = [
     image: "/images/tour-rio-classico.jpg",
     duration: "8-10 horas",
     highlights: ["Cristo Redentor", "Copacabana", "Ipanema", "Pão de Açúcar"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
   {
@@ -23,7 +23,7 @@ const tours = [
     image: "/images/tour-praias-rio.jpg",
     duration: "8 horas",
     highlights: ["Copacabana", "Ipanema", "Leblon", "Praia Vermelha"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
   {
@@ -38,7 +38,7 @@ const tours = [
       "Cabo Frio",
       "Mais opções",
     ],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
   {
@@ -49,7 +49,7 @@ const tours = [
     image: "/images/tour-buzios-dia.jpg",
     duration: "9-10 horas",
     highlights: ["Praia da Ferradura", "Geribá", "Marina", "Vida noturna"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
   {
@@ -60,7 +60,7 @@ const tours = [
     image: "/images/tour-aventura.jpg",
     duration: "8-10 horas",
     highlights: ["Trilhas", "Cachoeiras", "Esportes radicais", "Natureza"],
-    capacity: "1-8 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
   {
@@ -70,7 +70,7 @@ const tours = [
     image: "/images/tour-cultural.jpg",
     duration: "6-8 horas",
     highlights: ["Centro Histórico", "Museus", "Arquitetura Colonial", "Arte"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
   {
@@ -85,7 +85,7 @@ const tours = [
       "Bebidas regionais",
       "Mercados",
     ],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
   {
@@ -100,7 +100,7 @@ const tours = [
       "Flexibilidade total",
       "Até 12h",
     ],
-    capacity: "1-8 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
   },
 ];

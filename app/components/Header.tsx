@@ -11,13 +11,6 @@ const LINKS = [
   { name: "contato", href: "/contact" },
 ];
 
-const DESTINOS = [
-  { name: "Copacabana", href: "/copacabana" },
-  { name: "Ipanema", href: "/ipanema" },
-  { name: "Cristo Redentor", href: "/cristo" },
-  { name: "Galeão", href: "/galeao" },
-  { name: "Santos Dumont", href: "/santos-dumont" },
-];
 const WA_NUMBER = "5535984331369"; // exemplo: "5521999887766"
 const WA_LINK = `https://wa.me/${WA_NUMBER}`;
 
@@ -80,14 +73,14 @@ export default function Header() {
       {mobileOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-sm shadow-md">
           <nav className="flex flex-col px-6 py-4 gap-4">
-            {DESTINOS.map((destino) => (
+            {LINKS.map((links) => (
               <a
-                key={destino.name}
-                href={destino.href}
+                key={links.name}
+                href={links.href}
                 className="text-slate-700 hover:text-[#005F8C] font-medium transition"
                 onClick={() => setMobileOpen(false)}
               >
-                {destino.name}
+                {links.name}
               </a>
             ))}
 

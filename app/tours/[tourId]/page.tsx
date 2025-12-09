@@ -11,7 +11,7 @@ const toursData: Record<string, any> = {
     image: "/images/tour-rio-classico.jpg",
     duration: "8-10 horas",
     highlights: ["Cristo Redentor", "Copacabana", "Ipanema", "Pão de Açúcar"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Este é o tour mais completo para conhecer o Rio de Janeiro em um único dia. Visitaremos os principais cartões postais da cidade, incluindo o famoso Cristo Redentor com sua vista panorâmica de 360 graus, as praias de Copacabana e Ipanema, além do icônico Pão de Açúcar. Você terá tempo para fotos, compras e até uma parada para refeição.",
@@ -44,7 +44,7 @@ const toursData: Record<string, any> = {
     image: "/images/tour-praias-rio.jpg",
     duration: "8 horas",
     highlights: ["Copacabana", "Ipanema", "Leblon", "Praia Vermelha"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Passe um dia perfeito em algumas das praias mais incríveis do Rio de Janeiro. Este tour é ideal para quem quer relaxar, aproveitar o mar e mergulhar na cultura de praia carioca.",
@@ -75,7 +75,7 @@ const toursData: Record<string, any> = {
       "Cabo Frio",
       "Mais opções",
     ],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Descubra a beleza única da Região dos Lagos, com suas praias de águas cristalinas, chalés coloridos e a famosa vida noturna. Este é um tour de dia inteiro para explorar os melhores destinos.",
@@ -102,7 +102,7 @@ const toursData: Record<string, any> = {
     image: "/images/tour-buzios-dia.jpg",
     duration: "9-10 horas",
     highlights: ["Praia da Ferradura", "Geribá", "Marina", "Vida noturna"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Armação dos Búzios é um dos destinos mais românticos e belíssimos da Região dos Lagos. Passe o dia inteiro neste paraíso, com suas praias paradisíacas e atmosfera sofisticada.",
@@ -129,7 +129,7 @@ const toursData: Record<string, any> = {
     image: "/images/tour-aventura.jpg",
     duration: "8-10 horas",
     highlights: ["Trilhas", "Cachoeiras", "Esportes radicais", "Natureza"],
-    capacity: "1-8 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Para os mais corajosos e amantes da natureza! Este tour oferece experiências radicais e trilhas emocionantes na região.",
@@ -159,7 +159,7 @@ const toursData: Record<string, any> = {
     image: "/images/tour-cultural.jpg",
     duration: "6-8 horas",
     highlights: ["Centro Histórico", "Museus", "Arquitetura Colonial", "Arte"],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Explore o lado histórico e cultural do Rio, visitando museus, arquitetura colonial e conhecendo mais sobre a formação da cidade.",
@@ -190,7 +190,7 @@ const toursData: Record<string, any> = {
       "Bebidas regionais",
       "Mercados",
     ],
-    capacity: "1-6 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Para os apaixonados por gastronomia! Visite os melhores restaurantes, mercados e experimente as delícias locais.",
@@ -221,7 +221,7 @@ const toursData: Record<string, any> = {
       "Flexibilidade total",
       "Até 12h",
     ],
-    capacity: "1-8 pessoas",
+    capacity: "1-4 pessoas",
     price: "Consultar",
     fullDescription:
       "Quer um tour totalmente personalizado? Crie seu próprio roteiro de acordo com seus interesses e preferências. Você escolhe os locais, horários e atividades.",

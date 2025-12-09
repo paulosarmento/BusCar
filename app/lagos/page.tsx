@@ -10,7 +10,7 @@ const destinations = [
     description:
       "Destino turístico paradisíaco com praias selvagens, pôr do sol espetacular e charme cosmopolita.",
     image: "/images/buzios-armacao-beach.jpg",
-    passengers: "4-8",
+    passengers: "1-4",
   },
   {
     id: "arraial-do-cabo",
@@ -18,7 +18,7 @@ const destinations = [
     description:
       "Conhecida como a 'Caribe brasileira' com águas cristalinas e praias de areia branca.",
     image: "/images/arraial-do-cabo-beach.jpg",
-    passengers: "6+",
+    passengers: "1-4",
   },
   {
     id: "cabo-frio",
@@ -26,7 +26,7 @@ const destinations = [
     description:
       "Balneário tradicional com farol histórico, praias bonitas e movimentação comercial.",
     image: "/images/cabo-frio-lighthouse.jpg",
-    passengers: "8+",
+    passengers: "1-4",
   },
   {
     id: "sao-pedro",
@@ -34,7 +34,7 @@ const destinations = [
     description:
       "Município histórico com praias tranquilas e rica herança cultural e colonial.",
     image: "/images/sao-pedro-aldeia-beach.jpg",
-    passengers: "4-6",
+    passengers: "1-4",
   },
   {
     id: "rio-ostras",
@@ -42,7 +42,7 @@ const destinations = [
     description:
       "Praia tranquila e acolhedora, perfeita para famílias com infraestrutura completa.",
     image: "/images/rio-ostras-beach.jpg",
-    passengers: "6-8",
+    passengers: "1-4",
   },
   {
     id: "macae",
@@ -50,7 +50,7 @@ const destinations = [
     description:
       "Polo industrial e turístico com praias selvagens e natureza exuberante.",
     image: "/images/macae-beach-rio-de-janeiro.jpg",
-    passengers: "8+",
+    passengers: "1-4",
   },
   {
     id: "araruama",
@@ -58,7 +58,7 @@ const destinations = [
     description:
       "Conhecida por sua lagoa única com águas quentes, ideal para relaxamento e turismo.",
     image: "/images/araruama-lagoon.jpg",
-    passengers: "4-6",
+    passengers: "1-4",
   },
   {
     id: "iguaba",
@@ -66,7 +66,7 @@ const destinations = [
     description:
       "Pérola da Região dos Lagos com praias selvagens, natureza preservada e tranquilidade.",
     image: "/images/iguaba-grande-beach.jpg",
-    passengers: "4-8",
+    passengers: "1-4",
   },
 ];
 
