@@ -1,6 +1,5 @@
+import { WA_LINK, WA_NUMBER } from "@/lib/whatsApp";
 import { MessageCircle, Phone } from "lucide-react";
-const WA_NUMBER = "5535984331369"; // exemplo: "5521999887766"
-const WA_LINK = `https://wa.me/${WA_NUMBER}`;
 
 export default function Footer() {
   return (

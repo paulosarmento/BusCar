@@ -1,8 +1,7 @@
+import { WA_LINK } from "@/lib/whatsApp";
 import { MessageCircle } from "lucide-react";
 import Image from "next/image";
 
-const WA_NUMBER = "5535984331369"; // exemplo: "5521999887766"
-const WA_LINK = `https://wa.me/${WA_NUMBER}`;
 export default function Hero() {
   return (
     <section className="relative w-full">
