@@ -2,20 +2,28 @@
 
 import Image from "next/image";
 import { Menu, MessageCircle, X } from "lucide-react";
-import { useState } from "react";
-
-const LINKS = [
-  { name: "Rio", href: "/rio" },
-  { name: "Lagos", href: "/lagos" },
-  { name: "tours", href: "/tours" },
-  { name: "contato", href: "/contact" },
-];
+import { useEffect, useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "@/lib/translations";
+import Link from "next/link";
 
 const WA_NUMBER = "5535984331369"; // exemplo: "5521999887766"
 const WA_LINK = `https://wa.me/${WA_NUMBER}`;
 
 export default function Header() {
+  const { language } = useLanguage();
+  const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const t = translations[language];
 
   return (
     <header className="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-40 shadow-sm">
@@ -34,15 +42,10 @@ export default function Header() {
 
         {/* Menu desktop */}
         <nav className="hidden md:flex items-center gap-6">
-          {LINKS.map((links) => (
-            <a
-              key={links.name}
-              href={links.href}
-              className="text-slate-700 hover:text-[#005F8C] font-medium transition"
-            >
-              {links.name}
-            </a>
-          ))}
+          <Link href="/rio">{t.viagensRio}</Link>
+          <Link href="/lagos">{t.regiaoLagos}</Link>
+          <Link href="/tours">{t.tours}</Link>
+          <Link href="/contact">{t.contato}</Link>
 
           <a
             href={WA_LINK}
@@ -51,7 +54,7 @@ export default function Header() {
             className="inline-flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-xl shadow-md hover:scale-105 transform transition"
           >
             <MessageCircle className="w-5 h-5" />
-            Reservar
+            {t.reservar}
           </a>
         </nav>
 
@@ -73,16 +76,10 @@ export default function Header() {
       {mobileOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-sm shadow-md">
           <nav className="flex flex-col px-6 py-4 gap-4">
-            {LINKS.map((links) => (
-              <a
-                key={links.name}
-                href={links.href}
-                className="text-slate-700 hover:text-[#005F8C] font-medium transition"
-                onClick={() => setMobileOpen(false)}
-              >
-                {links.name}
-              </a>
-            ))}
+            <Link href="/rio">{t.viagensRio}</Link>
+            <Link href="/lagos">{t.regiaoLagos}</Link>
+            <Link href="/tours">{t.tours}</Link>
+            <Link href="/contact">{t.contato}</Link>
 
             <a
               href={WA_LINK}
@@ -91,7 +88,7 @@ export default function Header() {
               className="inline-flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-xl shadow-md hover:scale-105 transform transition"
             >
               <MessageCircle className="w-5 h-5" />
-              Reservar
+              {t.reservar}
             </a>
           </nav>
         </div>

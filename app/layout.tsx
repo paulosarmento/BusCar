@@ -1,6 +1,8 @@
 import type React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
+import LanguageSwitcher from "./components/LanguageSwitcher";
+import { LanguageProvider } from "./context/LanguageContext";
 
 export const metadata: Metadata = {
   title: "RJ Transfer — Transporte Particular para o Rio de Janeiro",
@@ -57,7 +59,10 @@ export default function RootLayout({
           color: "#1A1A1A",
         }}
       >
-        {children}
+        <LanguageProvider>
+          {children}
+          <LanguageSwitcher />
+        </LanguageProvider>
       </body>
     </html>
   );
