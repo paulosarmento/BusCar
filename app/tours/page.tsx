@@ -1,6 +1,9 @@
+"use client";
 import Link from "next/link";
 import Header from "../components/Header";
 import { Card } from "../components/card";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 // Dados dos tours disponíveis
 const tours = [
@@ -106,6 +109,10 @@ const tours = [
 ];
 
 export default function ToursPage() {
+  const { language } = useLanguage();
+
+  const t = translations[language];
+
   return (
     <div>
       <Header />
@@ -114,11 +121,9 @@ export default function ToursPage() {
       <section className="bg-primary text-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            Tours Personalizados
+            {t.toursTitulo}
           </h1>
-          <p className="text-lg opacity-90">
-            Explore Rio de Janeiro e a Região dos Lagos com um guia experiente
-          </p>
+          <p className="text-lg opacity-90">{t.toursSubtitulo}</p>
         </div>
       </section>
 
@@ -217,9 +222,3 @@ export default function ToursPage() {
     </div>
   );
 }
-
-export const metadata = {
-  title: "Tours Personalizados",
-  description:
-    "Tours completos pelo Rio de Janeiro e Região dos Lagos com motorista experiente. Dia inteiro visitando os melhores locais.",
-};

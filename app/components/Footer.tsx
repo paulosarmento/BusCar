@@ -1,7 +1,13 @@
+"use client";
 import { WA_LINK, WA_NUMBER } from "@/lib/whatsApp";
 import { MessageCircle, Phone } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export default function Footer() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <footer className="bg-[#005F8C] text-white">
       <div className="max-w-7xl mx-auto px-6 py-10">
@@ -9,8 +15,7 @@ export default function Footer() {
           <div>
             <div className="text-2xl font-semibold">RJ Transfer</div>
             <p className="mt-2 text-sm text-white/80 max-w-md">
-              Transporte particular e confortável para o Rio de Janeiro —
-              partindo de outras cidades.
+              {t.footerDescription}
             </p>
           </div>
 
@@ -22,7 +27,7 @@ export default function Footer() {
               className="inline-flex items-center gap-3 bg-white text-[#005F8C] px-4 py-2 rounded-xl shadow hover:scale-105 transition"
             >
               <MessageCircle className="w-5 h-5" />
-              Reservar pelo WhatsApp
+              {t.reservarWhatsapp}
             </a>
 
             <a
@@ -30,20 +35,21 @@ export default function Footer() {
               className="inline-flex items-center gap-2 text-white/90"
             >
               <Phone className="w-5 h-5" />
-              <span className="text-sm">Contato</span>
+              <span className="text-sm">{t.contato}</span>
             </a>
           </div>
         </div>
 
         <div className="mt-8 border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <span className="text-sm text-white/80">
-            © {new Date().getFullYear()} RJ Transfer — Todos os direitos
-            reservados
+            © {new Date().getFullYear()} {t.footerCopyright}
           </span>
 
           <div className="inline-flex items-center gap-2 bg-white text-[#005F8C] px-3 py-2 rounded-full shadow-sm">
-            <MessageCircle className="w-4 h-4" />
-            <span className="text-sm font-medium">Atendimento 24h</span>
+            <a href={`tel:+${WA_NUMBER}`} className="flex items-center gap-2">
+              <MessageCircle className="w-4 h-4" />
+              <span className="text-sm font-medium">{t.atendimento}</span>
+            </a>
           </div>
         </div>
       </div>

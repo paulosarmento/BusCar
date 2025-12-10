@@ -1,6 +1,10 @@
+"use client";
 import Link from "next/link";
 import Header from "../components/Header";
 import { Card } from "../components/card";
+import { useLanguage } from "../context/LanguageContext";
+import { useEffect, useState } from "react";
+import { translations } from "@/lib/translations";
 
 // Dados dos destinos da Região dos Lagos
 const destinations = [
@@ -71,6 +75,10 @@ const destinations = [
 ];
 
 export default function LagosPage() {
+  const { language } = useLanguage();
+
+  const t = translations[language];
+
   return (
     <div>
       <Header />
@@ -79,11 +87,9 @@ export default function LagosPage() {
       <section className="bg-primary text-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            Região dos Lagos
+            {t.regiaoLagosTitulo}
           </h1>
-          <p className="text-lg opacity-90">
-            Destinos paradisíacos com praias incríveis e paisagens selvagens
-          </p>
+          <p className="text-lg opacity-90">{t.regiaoLagosDescricao}</p>
         </div>
       </section>
 
@@ -122,9 +128,3 @@ export default function LagosPage() {
     </div>
   );
 }
-
-export const metadata = {
-  title: "Viagens Região dos Lagos",
-  description:
-    "Conheça os principais destinos e praias onde dirijo como motorista de aplicativo na Região dos Lagos",
-};

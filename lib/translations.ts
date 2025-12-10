@@ -1,5 +1,25 @@
+import { Package, ShieldCheck, UserCheck } from "lucide-react";
+
 export const translations = {
   pt: {
+    FEATURES: [
+      {
+        id: "comfort",
+        title: "Conforto e Segurança",
+        Icon: ShieldCheck,
+      },
+      {
+        id: "driver",
+        title: "Motorista Experiente",
+        Icon: UserCheck,
+      },
+      {
+        id: "luggage",
+        title: "Bagageiro Disponível",
+        Icon: Package,
+      },
+    ],
+
     // Header e Navegação
     home: "Home",
     viagensRio: "Viagens Rio",
@@ -10,8 +30,15 @@ export const translations = {
     motorista: "Motorista RJ",
     selecionarIdioma: "Selecionar Idioma",
     reservar: "Reservar",
+    reservarWhatsapp: "Reservar no WhatsApp",
+    footerDescription:
+      "RJ Transfer - Transfere-se com segurança e conforto. Oferecemos viagens confiáveis e seguras pelo Rio de Janeiro.",
+    footerCopyright: "RJ Transfer. Todos os direitos reservados.",
+    atendimento: "Atendimento 24h",
 
     // Home
+    vantagens: "Porque escolher nossas viagens?",
+    vantagensSubtitulo: "Viagens confiáveis e seguras pelo Rio de Janeiro",
     viagensConfiaveisSeguras:
       "Viagens confiáveis e seguras pelo Rio de Janeiro",
     explorarDestinos: "Explorar Destinos",
@@ -181,6 +208,9 @@ export const translations = {
     toursTitulo: "Tours Disponíveis",
     toursSubtitulo:
       "Passeios completos com flexibilidade total para sua família",
+    regiaoRioTitulo: "Viagens no Rio de Janeiro",
+    regiaoRioDescricao:
+      "Descubra todos os principais destinos do Rio de Janeiro",
 
     // Novos itens
     destaques: "Destaques",
@@ -200,6 +230,24 @@ export const translations = {
     melhorPara: "Melhor para",
   },
   en: {
+    FEATURES: [
+      {
+        id: "comfort",
+        title: "Comfort and Safety",
+        Icon: ShieldCheck,
+      },
+      {
+        id: "driver",
+        title: "Experienced Driver",
+        Icon: UserCheck,
+      },
+      {
+        id: "luggage",
+        title: "Luggage Available",
+        Icon: Package,
+      },
+    ],
+
     // Header e Navegação
     home: "Home",
     viagensRio: "Rio Trips",
@@ -210,8 +258,15 @@ export const translations = {
     motorista: "RJ Driver",
     selecionarIdioma: "Select Language",
     reservar: "Reserve",
+    reservarWhatsapp: "Reserve on WhatsApp",
+    footerDescription:
+      "RJ Transfer - Transfer safely and comfortably. We offer reliable and safe trips around Rio de Janeiro.",
+    footerCopyright: " Rio Trips. All rights reserved.",
+    atendimento: "24-hour service",
 
     // Home
+    vantagens: "Why choose our trips?",
+    vantagensSubtitulo: "Reliable and safe trips throughout Rio de Janeiro",
     viagensConfiaveisSeguras:
       "Reliable and safe trips throughout Rio de Janeiro",
     explorarDestinos: "Explore Destinations",
@@ -377,6 +432,8 @@ export const translations = {
       "Discover all the main destinations in the Lagos Region",
     toursTitulo: "Available Tours",
     toursSubtitulo: "Complete tours with total flexibility for your family",
+    regiaoRioTitulo: "Trips in Rio de Janeiro",
+    regiaoRioDescricao: "Discover all the main destinations in Rio de Janeiro",
 
     // Novos itens
     destaques: "Highlights",
@@ -396,6 +453,24 @@ export const translations = {
     melhorPara: "Best For",
   },
   es: {
+    FEATURES: [
+      {
+        id: "comfort",
+        title: "Conforto e Seguridad",
+        Icon: ShieldCheck,
+      },
+      {
+        id: "driver",
+        title: "Conductor Experiente",
+        Icon: UserCheck,
+      },
+      {
+        id: "luggage",
+        title: "Bagajeiro Disponible",
+        Icon: Package,
+      },
+    ],
+
     // Header e Navegação
     home: "Inicio",
     viagensRio: "Viajes a Río",
@@ -406,8 +481,15 @@ export const translations = {
     motorista: "Conductor RJ",
     selecionarIdioma: "Seleccionar Idioma",
     reservar: "Reservar",
+    reservarWhatsapp: "Reservar en WhatsApp",
+    footerDescription:
+      "RJ Transfer - Traslados seguros y cómodos. Ofrecemos viajes confiables y seguros por Río de Janeiro.",
+    footerCopyright: "Todos los derechos reservados",
+    atendimento: "Servicio 24 horas",
 
     // Home
+    vantagens: "Porque elegir nuestras viajes?",
+    vantagensSubtitulo: "Viajes confiables y seguros por todo Río de Janeiro",
     viagensConfiaveisSeguras:
       "Viajes confiables y seguros por todo Río de Janeiro",
     explorarDestinos: "Explorar Destinos",
@@ -574,6 +656,9 @@ export const translations = {
       "Descubre todos los principales destinos de la Región de los Lagos",
     toursTitulo: "Tours Disponibles",
     toursSubtitulo: "Tours completos con flexibilidad total para tu familia",
+    regiaoRioTitulo: "Viajes en el Rio de Janeiro",
+    regiaoRioDescricao:
+      "Descubre todos los principales destinos del Rio de Janeiro",
 
     // Novos itens
     destaques: "Destacados",

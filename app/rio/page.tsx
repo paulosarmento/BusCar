@@ -1,6 +1,9 @@
+"use client";
 import Link from "next/link";
 import Header from "../components/Header";
 import { Card } from "../components/card";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 // Dados dos destinos do Rio
 const destinations = [
@@ -71,6 +74,9 @@ const destinations = [
 ];
 
 export default function RioPage() {
+  const { language } = useLanguage();
+
+  const t = translations[language];
   return (
     <div>
       <Header />
@@ -79,7 +85,7 @@ export default function RioPage() {
       <section className="bg-primary text-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            Viagens em Rio de Janeiro
+            {t.regiaoRioTitulo}
           </h1>
           <p className="text-lg opacity-90">
             Conheça os principais destinos onde dirijo regularmente
@@ -122,9 +128,3 @@ export default function RioPage() {
     </div>
   );
 }
-
-export const metadata = {
-  title: "Viagens em Rio de Janeiro",
-  description:
-    "Conheça os principais destinos e rotas onde dirijo como motorista de aplicativo no Rio de Janeiro",
-};

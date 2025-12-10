@@ -1,16 +1,8 @@
+"use client";
 import { Package, ShieldCheck, UserCheck } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "@/lib/translations";
 
-type Feature = {
-  id: string;
-  title: string;
-  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-};
-
-const FEATURES: Feature[] = [
-  { id: "comfort", title: "Conforto e Segurança", Icon: ShieldCheck },
-  { id: "driver", title: "Motorista Experiente", Icon: UserCheck },
-  { id: "luggage", title: "Bagageiro disponível", Icon: Package },
-];
 function FeatureCard({
   title,
   Icon,
@@ -29,20 +21,19 @@ function FeatureCard({
 }
 
 export default function Advantages() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-[#005F8C]">
-            Por que escolher nosso serviço?
-          </h2>
-          <p className="mt-2 text-slate-600">
-            Viagens confortáveis e com preço justo para o Rio de Janeiro
-          </p>
+          <h2 className="text-3xl font-bold text-[#005F8C]">{t.vantagens}</h2>
+          <p className="mt-2 text-slate-600">{t.vantagensSubtitulo}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {FEATURES.map((f) => (
+          {t.FEATURES.map((f) => (
             <FeatureCard key={f.id} title={f.title} Icon={f.Icon} />
           ))}
         </div>

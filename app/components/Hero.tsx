@@ -1,8 +1,14 @@
+"use client";
 import { WA_LINK } from "@/lib/whatsApp";
 import { MessageCircle } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export default function Hero() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <section className="relative w-full">
       <div className="h-[70vh] md:h-[72vh] lg:h-[80vh] relative overflow-hidden">
@@ -18,11 +24,8 @@ export default function Hero() {
         <div className="absolute inset-0 flex items-center justify-center px-6">
           <div className="max-w-7xl mx-auto text-center text-white">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-md">
-              Transporte para o Rio de Janeiro
+              {t.viagensConfiaveisSeguras}
             </h1>
-            <p className="mt-4 text-lg sm:text-xl text-white/90">
-              Copacabana · Ipanema · Cristo · Galeão · Santos Dumont
-            </p>
 
             <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">
               <a
@@ -32,7 +35,7 @@ export default function Hero() {
                 className="inline-flex items-center gap-3 bg-[#25D366] text-white px-5 py-3 rounded-xl shadow-lg hover:scale-105 transition"
               >
                 <MessageCircle className="w-5 h-5" />
-                <span className="font-medium">Reservar pelo WhatsApp</span>
+                <span className="font-medium">{t.reservarWhatsapp}</span>
               </a>
             </div>
           </div>
