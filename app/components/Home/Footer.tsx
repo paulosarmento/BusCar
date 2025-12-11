@@ -1,12 +1,12 @@
 "use client";
 import { WA_LINK, WA_NUMBER } from "@/lib/whatsApp";
 import { MessageCircle, Phone } from "lucide-react";
-import { useLanguage } from "../context/LanguageContext";
-import { translations } from "@/lib/translations";
+import { useLanguage } from "../../context/LanguageContext";
+import { translationsHome } from "@/lib/translationsHome";
 
 export default function Footer() {
   const { language } = useLanguage();
-  const t = translations[language];
+  const t = translationsHome[language];
 
   return (
     <footer className="bg-[#005F8C] text-white">

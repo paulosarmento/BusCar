@@ -2,12 +2,36 @@
 import { WA_LINK } from "@/lib/whatsApp";
 import { MessageCircle } from "lucide-react";
 import Image from "next/image";
-import { useLanguage } from "../context/LanguageContext";
-import { translations } from "@/lib/translations";
+import { useLanguage } from "../../context/LanguageContext";
+import { useEffect, useState } from "react";
+import { translationsHome } from "@/lib/translationsHome";
 
 export default function Hero() {
   const { language } = useLanguage();
-  const t = translations[language];
+  const t = translationsHome[language];
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <section className="relative w-full">
+        <div className="h-[70vh] md:h-[72vh] lg:h-[80vh] relative overflow-hidden">
+          <Image
+            src="/images/etios-hero.png"
+            alt="Toyota Etios Hatch prata com vista para o Rio de Janeiro"
+            fill
+            style={{ objectFit: "cover" }}
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,95,140,0.55)] to-[rgba(0,0,0,0.2)]" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative w-full">

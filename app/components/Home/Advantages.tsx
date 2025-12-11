@@ -1,7 +1,6 @@
 "use client";
-import { Package, ShieldCheck, UserCheck } from "lucide-react";
-import { useLanguage } from "../context/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translationsHome } from "@/lib/translationsHome";
+import { useLanguage } from "../../context/LanguageContext";
 
 function FeatureCard({
   title,
@@ -22,7 +21,7 @@ function FeatureCard({
 
 export default function Advantages() {
   const { language } = useLanguage();
-  const t = translations[language];
+  const t = translationsHome[language];
 
   return (
     <section className="py-16 bg-white">

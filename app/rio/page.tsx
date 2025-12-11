@@ -3,12 +3,12 @@ import Link from "next/link";
 import Header from "../components/Header";
 import { Card } from "../components/card";
 import { useLanguage } from "../context/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translationsRio } from "@/lib/translationsRio";
 
 export default function RioPage() {
   const { language } = useLanguage();
 
-  const t = translations[language];
+  const t = translationsRio[language];
   return (
     <div>
       <Header />

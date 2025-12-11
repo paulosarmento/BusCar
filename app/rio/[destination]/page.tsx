@@ -4,8 +4,8 @@ import { ArrowLeft, MapPin, Users, Clock } from "lucide-react";
 import Header from "@/app/components/Header";
 import { Button } from "@/app/components/button";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { translations } from "@/lib/translations";
 import React from "react";
+import { translationsRio } from "@/lib/translationsRio";
 
 export default function DestinationPage({
   params,
@@ -13,7 +13,7 @@ export default function DestinationPage({
   params: Promise<{ destination: string }>;
 }) {
   const { language } = useLanguage();
-  const t = translations[language];
+  const t = translationsRio[language];
 
   // Resolver o params (necessário no Next.js 16)
   const { destination } = React.use(params);
@@ -49,7 +49,7 @@ export default function DestinationPage({
           <Link href="/rio">
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Voltar para Viagens
+              {t.voltarParaViagens}
             </Button>
           </Link>
         </div>
@@ -62,14 +62,14 @@ export default function DestinationPage({
           <div className="lg:col-span-2">
             <div className="prose prose-sm max-w-none">
               <h2 className="text-2xl font-bold mb-4 text-foreground">
-                Sobre {data.name}
+                {t.sobre} {data.name}
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
                 {data.fullDescription}
               </p>
 
               <h3 className="text-xl font-bold mb-4 text-foreground">
-                Destaques
+                {t.destaques}
               </h3>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
                 {data.highlights.map((highlight: string, idx: number) => (
@@ -88,7 +88,9 @@ export default function DestinationPage({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="w-5 h-5 text-primary" />
-                  <h4 className="font-semibold text-foreground">Capacidade</h4>
+                  <h4 className="font-semibold text-foreground">
+                    {t.capacidade}
+                  </h4>
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {data.passengers}
@@ -99,7 +101,7 @@ export default function DestinationPage({
                 <div className="flex items-center gap-2 mb-2">
                   <Clock className="w-5 h-5 text-primary" />
                   <h4 className="font-semibold text-foreground">
-                    Melhor Horário
+                    {t.melhorHorario}
                   </h4>
                 </div>
                 <p className="text-sm text-muted-foreground">{data.bestTime}</p>
@@ -109,7 +111,7 @@ export default function DestinationPage({
                 <div className="flex items-center gap-2 mb-2">
                   <MapPin className="w-5 h-5 text-primary" />
                   <h4 className="font-semibold text-foreground">
-                    Custo Estimado
+                    {t.custoEstimado}
                   </h4>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -118,7 +120,7 @@ export default function DestinationPage({
               </div>
 
               <Button className="w-full bg-primary hover:bg-primary/90">
-                Solicitar Corrida
+                {t.solicitarCorrida}
               </Button>
             </div>
           </div>
@@ -129,7 +131,7 @@ export default function DestinationPage({
       <section className="bg-muted/50 py-12 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold mb-6 text-foreground">
-            Outros Destinos
+            {t.outrosDestinos}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Object.keys(t.DESTINATIONDETAILS)
@@ -146,7 +148,7 @@ export default function DestinationPage({
                       }
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      → Conhecer mais
+                      → {t.conhecerMais}
                     </p>
                   </div>
                 </Link>
