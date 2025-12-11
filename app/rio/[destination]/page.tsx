@@ -15,11 +15,10 @@ export default function DestinationPage({
   const { language } = useLanguage();
   const t = translationsRio[language];
 
-  // Resolver o params (necessário no Next.js 16)
   const { destination } = React.use(params);
   const data =
     t.DESTINATIONDETAILS[destination as keyof typeof t.DESTINATIONDETAILS] ||
-    t.DESTINATIONDETAILS["copacabana" as keyof typeof t.DESTINATIONDETAILS];
+    t.DESTINATIONDETAILS["copacabana"];
 
   return (
     <div>

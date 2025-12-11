@@ -1,5 +1,3 @@
-import { Package, ShieldCheck, UserCheck } from "lucide-react";
-
 export const translationsRio = {
   pt: {
     DESTINATIONS: [
