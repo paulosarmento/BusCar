@@ -32,7 +32,7 @@ export default function TourDetailPage({
             href="/tours"
             className="text-primary hover:underline mb-4 inline-block"
           >
-            ← Voltar para Tours
+            ← {t.toursVoltar}
           </Link>
           <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-2">
             {tour.name}
@@ -61,7 +61,7 @@ export default function TourDetailPage({
           <div className="lg:col-span-2">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-4">
-                Sobre este Tour
+                {t.sobreTitulo}
               </h2>
               <p className="text-muted-foreground leading-relaxed text-lg">
                 {tour.fullDescription}
@@ -70,7 +70,7 @@ export default function TourDetailPage({
 
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-4">
-                Itinerário
+                {t.itinerarioTitulo}
               </h2>
               <ul className="space-y-3">
                 {tour.itinerary.map((item: string, index: number) => (
@@ -85,7 +85,7 @@ export default function TourDetailPage({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-xl font-bold text-foreground mb-4">
-                  O que está incluído
+                  {t.inclusoTitulo}
                 </h3>
                 <ul className="space-y-2">
                   {tour.includes.map((item: string, index: number) => (
@@ -98,7 +98,7 @@ export default function TourDetailPage({
               </div>
               <div>
                 <h3 className="text-xl font-bold text-foreground mb-4">
-                  O que NÃO está incluído
+                  {t.exclusoesTitulo}
                 </h3>
                 <ul className="space-y-2">
                   {tour.notIncludes.map((item: string, index: number) => (
@@ -117,7 +117,9 @@ export default function TourDetailPage({
             <Card className="p-6 sticky top-4">
               <div className="space-y-4">
                 <div className="border-b border-border pb-4">
-                  <p className="text-sm text-muted-foreground mb-1">Duração</p>
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {t.duracao}
+                  </p>
                   <p className="text-lg font-semibold text-foreground">
                     {tour.duration}
                   </p>
@@ -125,7 +127,7 @@ export default function TourDetailPage({
 
                 <div className="border-b border-border pb-4">
                   <p className="text-sm text-muted-foreground mb-1">
-                    Capacidade
+                    {t.capacidade}
                   </p>
                   <p className="text-lg font-semibold text-foreground">
                     {tour.capacity}
@@ -141,14 +143,14 @@ export default function TourDetailPage({
 
                 <div className="border-b border-border pb-4">
                   <p className="text-sm text-muted-foreground mb-1">
-                    Melhor para
+                    {t.melhorPara}
                   </p>
                   <p className="text-sm text-foreground">{tour.bestFor}</p>
                 </div>
 
                 <div className="pt-4">
                   <p className="text-sm text-muted-foreground mb-3">
-                    Destaques do tour:
+                    {t.destaquesTour}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {tour.highlights.map((highlight: string, index: number) => (
@@ -163,7 +165,7 @@ export default function TourDetailPage({
                 </div>
 
                 <button className="w-full bg-primary text-primary-foreground py-3 rounded-lg hover:opacity-90 transition font-semibold">
-                  Solicitar Reserva
+                  {t.solicitarReserva}
                 </button>
               </div>
             </Card>
@@ -175,23 +177,21 @@ export default function TourDetailPage({
       <section className="bg-muted py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Pronto para este tour?
+            {t.prontoParaViajar}
           </h2>
-          <p className="text-muted-foreground mb-8">
-            Entre em contato para agendar sua experiência
-          </p>
+          <p className="text-muted-foreground mb-8">{t.entreEmContato}</p>
           <Link
             href="/contato"
             className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg hover:opacity-90 transition"
           >
-            Fale Conosco
+            {t.faleConosco}
           </Link>
         </div>
       </section>
       <section className="bg-muted/50 py-12 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold mb-6 text-foreground">
-            Outros Destinos
+            {t.outrosDestinos}
             {/* {t.outrosDestinos} */}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -209,7 +209,7 @@ export default function TourDetailPage({
                       }
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Conhecer mais
+                      {t.conhecerMais}
                       {/* → {t.conhecerMais} */}
                     </p>
                   </div>

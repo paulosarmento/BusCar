@@ -8,6 +8,21 @@ export const translationsTours = {
     toursCTADescricao:
       "Entre em contato para reservar seu tour ou esclarecer dúvidas!",
     toursCTAButton: "Agende Agora",
+    toursVoltar: "Voltar para Tours",
+    sobreTitulo: "Sobre este Tour",
+    itinerarioTitulo: "Itinerário",
+    inclusoTitulo: "O que está incluído",
+    exclusoesTitulo: "O que NÃO estará incluido",
+    duracao: "Duração",
+    capacidade: "Capacidade",
+    melhorPara: "Melhor para",
+    destaquesTour: "Destaques do tour:",
+    solicitarReserva: "Solicitar Reserva",
+    prontoParaViajar: "Pronto para este tour?",
+    entreEmContato: "Entre em contato e agende seu tour agora mesmo!",
+    faleConosco: "Fale Conosco",
+    outrosDestinos: "Outros Destinos",
+    conhecerMais: "Conhecer Mais",
     DESTINATIONS: [
       {
         id: "tour-rio-classico",
@@ -408,6 +423,22 @@ export const translationsTours = {
     toursCTATitulo: "Ready for your adventure?",
     toursCTADescricao: "Get in touch to reserve your tour or ask any question!",
     toursCTAButton: "Book Now",
+    toursVoltar: "Back to Tours",
+    sobreTitulo: "About This Tour",
+    itinerarioTitulo: "Itinerary",
+    inclusoTitulo: "What's Included",
+    exclusoesTitulo: "What's NOT Included",
+    duracao: "Duration",
+    capacidade: "Capacity",
+    melhorPara: "Best For",
+    destaquesTour: "Tour Highlights:",
+    solicitarReserva: "Request Booking",
+    prontoParaViajar: "Ready for this tour?",
+    entreEmContato: "Get in touch and book your tour now!",
+    faleConosco: "Contact Us",
+    outrosDestinos: "Other Destinations",
+    conhecerMais: "Learn More",
+
     DESTINATIONS: [
       {
         id: "tour-rio-classico",
@@ -804,6 +835,22 @@ export const translationsTours = {
     toursCTADescricao:
       "¡Ponte en contacto para reservar tu tour o preguntanos!",
     toursCTAButton: "Reservar Ahora",
+    toursVoltar: "Volver a los Tours",
+    sobreTitulo: "Sobre este Tour",
+    itinerarioTitulo: "Itinerario",
+    inclusoTitulo: "Qué está incluido",
+    exclusoesTitulo: "Qué NO está incluido",
+    duracao: "Duración",
+    capacidade: "Capacidad",
+    melhorPara: "Ideal para",
+    destaquesTour: "Aspectos destacados del tour:",
+    solicitarReserva: "Solicitar Reserva",
+    prontoParaViajar: "¿Listo para este tour?",
+    entreEmContato: "Contáctanos y reserva tu tour ahora mismo",
+    faleConosco: "Contáctanos",
+    outrosDestinos: "Otros Destinos",
+    conhecerMais: "Conocer Más",
+
     DESTINATIONS: [
       {
         id: "tour-rio-classico",

@@ -22,7 +22,7 @@ export const translationsHome = {
     vantagens: "Porque escolher nossas viagens?",
     vantagensSubtitulo: "Viagens confiáveis e seguras pelo Rio de Janeiro",
     footerDescription:
-      "RJ Transfer - Transfer safely and comfortably. We offer reliable and safe trips around Rio de Janeiro.",
+      "RJ Transfer - Traslados seguros e confortáveis. Oferecemos viagens confiáveis e seguras pelo Rio de Janeiro.",
     reservarWhatsapp: "Reservar en WhatsApp",
     contato: "Contato",
     footerCopyright: "RJ Transfer. Todos os direitos reservados.",

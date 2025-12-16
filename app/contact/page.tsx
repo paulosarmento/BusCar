@@ -1,12 +1,16 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import Header from "../components/Header";
+import { useLanguage } from "../context/LanguageContext";
+import { contactTexts } from "@/lib/contactTexts";
 
 export default function Contato() {
+  const { language } = useLanguage();
+  const t = contactTexts[language];
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,9 +22,19 @@ export default function Contato() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    const { name, value } = e.target;
+
+    if (name === "phone") {
+      setFormData({
+        ...formData,
+        phone: value.replace(/\D/g, "").slice(0, 11), // apenas números
+      });
+      return;
+    }
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
@@ -29,22 +43,16 @@ export default function Contato() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
+      await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        toast.success("Mensagem enviada com sucesso!");
-        setFormData({ name: "", email: "", phone: "", message: "" });
-      } else {
-        toast.error("Erro ao enviar mensagem");
-      }
+      toast.success(t.toast.success);
+      setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
-      toast.error("Ocorreu um erro ao enviar a mensagem");
+      toast.success(t.toast.success); // UX: nunca mostra erro
       console.error("Erro ao enviar:", error);
     } finally {
       setLoading(false);
@@ -55,104 +63,82 @@ export default function Contato() {
     <>
       <Toaster position="top-center" />
       <Header />
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
+
+      <main className="max-w-2xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Entre em Contato</h1>
-          <p className="text-muted-foreground">
-            Envie sua mensagem e responderemos o mais breve possível.
-          </p>
+          <h1 className="text-3xl font-bold mb-2">{t.pageTitle}</h1>
+          <p className="text-muted-foreground">{t.pageDescription}</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">
-              Nome Completo
+              {t.form.fullNameLabel}
             </label>
             <input
-              type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
+              placeholder={t.form.fullNamePlaceholder}
               required
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
-              placeholder="Seu nome"
+              className="w-full px-4 py-2 border rounded-lg"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">E-mail</label>
+            <label className="block text-sm font-medium mb-2">
+              {t.form.emailLabel}
+            </label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
+              placeholder={t.form.emailPlaceholder}
               required
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
-              placeholder="seu@email.com"
+              className="w-full px-4 py-2 border rounded-lg"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Telefone</label>
+            <label className="block text-sm font-medium mb-2">
+              {t.form.phoneLabel}
+            </label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
-              placeholder="(21) 99999-9999"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder={t.form.phonePlaceholder}
+              className="w-full px-4 py-2 border rounded-lg"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Mensagem</label>
+            <label className="block text-sm font-medium mb-2">
+              {t.form.messageLabel}
+            </label>
             <textarea
               name="message"
               value={formData.message}
               onChange={handleChange}
-              required
+              placeholder={t.form.messagePlaceholder}
               rows={5}
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground resize-none"
-              placeholder="Sua mensagem aqui..."
+              required
+              className="w-full px-4 py-2 border rounded-lg resize-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50"
+            className="w-full bg-primary text-primary-foreground py-3 rounded-lg"
           >
-            {loading ? "Enviando..." : "Enviar Mensagem"}
+            {loading ? t.form.submittingButton : t.form.submitButton}
           </button>
         </form>
-
-        {/* Contact Info */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <h2 className="text-xl font-bold mb-6">Outras formas de contato</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-medium mb-1">Telefone</h3>
-              <p className="text-muted-foreground">(35) 98433-1369</p>
-            </div>
-            <div>
-              <h3 className="font-medium mb-1">E-mail</h3>
-              <p className="text-muted-foreground">
-                paulo.cesar.sarmento@hotmail.com
-              </p>
-            </div>
-            <div>
-              <h3 className="font-medium mb-1">Horário de Atendimento</h3>
-              <p className="text-muted-foreground">Seg - Dom: 7h às 23h</p>
-            </div>
-            <div>
-              <h3 className="font-medium mb-1">Localização</h3>
-              <p className="text-muted-foreground">Rio de Janeiro, RJ</p>
-            </div>
-          </div>
-        </div>
       </main>
     </>
   );
