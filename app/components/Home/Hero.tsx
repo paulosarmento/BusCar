@@ -1,6 +1,6 @@
 "use client";
 import { WA_LINK } from "@/lib/whatsApp";
-import { MessageCircle, Video } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
 import { useEffect, useState } from "react";

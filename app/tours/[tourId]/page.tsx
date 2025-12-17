@@ -5,6 +5,7 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import { translationsTours } from "@/lib/translationsTours";
 import Link from "next/link";
 import React from "react";
+import CustomTourBuilder from "./CustomTourBuilder";
 
 export default function TourDetailPage({
   params,
@@ -21,6 +22,9 @@ export default function TourDetailPage({
     t.DESTINATIONSDETAILS[
       "rio-de-janeiro" as keyof typeof t.DESTINATIONSDETAILS
     ];
+  if (tourId === "tour-personalizado") {
+    return <CustomTourBuilder />;
+  }
   return (
     <div>
       <Header />
@@ -181,7 +185,7 @@ export default function TourDetailPage({
           </h2>
           <p className="text-muted-foreground mb-8">{t.entreEmContato}</p>
           <Link
-            href="/contato"
+            href="/contact"
             className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg hover:opacity-90 transition"
           >
             {t.faleConosco}
