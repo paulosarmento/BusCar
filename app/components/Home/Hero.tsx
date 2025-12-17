@@ -1,6 +1,6 @@
 "use client";
 import { WA_LINK } from "@/lib/whatsApp";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Video } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
 import { useEffect, useState } from "react";
@@ -36,13 +36,16 @@ export default function Hero() {
   return (
     <section className="relative w-full">
       <div className="h-[70vh] md:h-[72vh] lg:h-[80vh] relative overflow-hidden">
-        <Image
-          src="/images/etios-hero.png"
-          alt="Toyota Etios Hatch prata com vista para o Rio de Janeiro"
-          fill
-          style={{ objectFit: "cover" }}
-          priority
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
+
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,95,140,0.55)] to-[rgba(0,0,0,0.2)]" />
 
         <div className="absolute inset-0 flex items-center justify-center px-6">
