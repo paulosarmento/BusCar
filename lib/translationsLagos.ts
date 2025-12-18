@@ -95,7 +95,8 @@ export const translationsLagos = {
         passengers: "1-4",
         bestTime:
           "O ano todo, especialmente primavera e verão (setembro a março)",
-        estimatedCost: "A partir de R$ 80,00 até R$ 120,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 450,00 saindo do Rio de Janeiro (Centro).",
       },
       "arraial-do-cabo": {
         name: "Arraial do Cabo",
@@ -112,7 +113,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Verão (dezembro a março)",
-        estimatedCost: "A partir de R$ 85,00 até R$ 125,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 120,00 saindo de Búzios e a partir de R$ 400,00 saindo do Rio de Janeiro (Centro). ",
       },
       "cabo-frio": {
         name: "Cabo Frio",
@@ -129,7 +131,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo, especialmente verão",
-        estimatedCost: "A partir de R$ 75,00 até R$ 110,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 80,00 saindo de Búzios e a partir de R$ 400,00 saindo do Rio de Janeiro (Centro).",
       },
       "sao-pedro": {
         name: "São Pedro da Aldeia",
@@ -146,7 +149,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo",
-        estimatedCost: "A partir de R$ 65,00 até R$ 100,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 80,00 saindo de Búzios e a partir de R$ 400,00 saindo do Rio de Janeiro (Centro).",
       },
       "rio-ostras": {
         name: "Rio das Ostras",
@@ -163,7 +167,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo",
-        estimatedCost: "A partir de R$ 70,00 até R$ 105,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 120,00 saindo de Búzios e a partir de R$ 450,00 saindo do Rio de Janeiro (Centro).",
       },
       macae: {
         name: "Macaé",
@@ -180,7 +185,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Primavera e verão",
-        estimatedCost: "A partir de R$ 90,00 até R$ 130,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 150,00 saindo de Búzios e a partir de R$ 500,00 saindo do Rio de Janeiro (Centro).",
       },
       araruama: {
         name: "Araruama",
@@ -197,7 +203,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo, especialmente inverno",
-        estimatedCost: "A partir de R$ 50,00 até R$ 85,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 200,00 saindo de Búzios e a partir de R$ 300,00 saindo do Rio de Janeiro (Centro).",
       },
       iguaba: {
         name: "Iguaba Grande",
@@ -214,7 +221,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo",
-        estimatedCost: "A partir de R$ 70,00 até R$ 110,00 do centro do Rio",
+        estimatedCost:
+          "Valores a partir de R$ 150,00 saindo de Búzios e a partir de R$ 350,00 saindo do Rio de Janeiro (Centro).",
       },
     },
   },
@@ -315,7 +323,8 @@ export const translationsLagos = {
         passengers: "1-4",
         bestTime:
           "All year long, especially spring and summer (September to March)",
-        estimatedCost: "From R$ 80.00 to R$ 120.00 from downtown Rio",
+        estimatedCost:
+          "Prices start from R$ 450.00 departing from Rio de Janeiro (Centro).",
       },
 
       "arraial-do-cabo": {
@@ -333,7 +342,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Summer (December to March)",
-        estimatedCost: "From R$ 85.00 to R$ 125.00 from downtown Rio",
+        estimatedCost:
+          "Prices start at R$ 120.00 departing from Búzios and from R$ 400.00 departing from Rio de Janeiro (Centro).",
       },
 
       "cabo-frio": {
@@ -351,7 +361,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "All year long, especially summer",
-        estimatedCost: "From R$ 75.00 to R$ 110.00 from downtown Rio",
+        estimatedCost:
+          "Prices start at R$ 80.00 departing from Búzios and from R$ 400.00 departing from Rio de Janeiro (Centro).",
       },
 
       "sao-pedro": {
@@ -369,7 +380,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "All year long",
-        estimatedCost: "From R$ 65.00 to R$ 100.00 from downtown Rio",
+        estimatedCost:
+          "Prices start at R$ 80.00 departing from Búzios and from R$ 400.00 departing from Rio de Janeiro (Centro).",
       },
 
       "rio-ostras": {
@@ -387,7 +399,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "All year long",
-        estimatedCost: "From R$ 70.00 to R$ 105.00 from downtown Rio",
+        estimatedCost:
+          "Prices start at R$ 120.00 departing from Búzios and from R$ 450.00 departing from Rio de Janeiro (Centro).",
       },
 
       macae: {
@@ -405,7 +418,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Spring and summer",
-        estimatedCost: "From R$ 90.00 to R$ 130.00 from downtown Rio",
+        estimatedCost:
+          "Prices start at R$ 150.00 departing from Búzios and from R$ 500.00 departing from Rio de Janeiro (Centro).",
       },
 
       araruama: {
@@ -423,7 +437,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "All year long, especially winter",
-        estimatedCost: "From R$ 50.00 to R$ 85.00 from downtown Rio",
+        estimatedCost:
+          "Prices start at R$ 200.00 departing from Búzios and from R$ 300.00 departing from Rio de Janeiro (Centro).",
       },
 
       iguaba: {
@@ -441,7 +456,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "All year long",
-        estimatedCost: "From R$ 70.00 to R$ 110.00 from downtown Rio",
+        estimatedCost:
+          "Prices start at R$ 150.00 departing from Búzios and from R$ 350.00 departing from Rio de Janeiro (Centro).",
       },
     },
   },
@@ -541,7 +557,8 @@ export const translationsLagos = {
         passengers: "1-4",
         bestTime:
           "Todo el año, especialmente primavera y verano (septiembre a marzo)",
-        estimatedCost: "Desde R$ 80,00 hasta R$ 120,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan desde R$ 450,00 con salida desde Río de Janeiro (Centro).",
       },
 
       "arraial-do-cabo": {
@@ -559,7 +576,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Verano (diciembre a marzo)",
-        estimatedCost: "Desde R$ 85,00 hasta R$ 125,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan en R$ 120,00 saliendo de Búzios y desde R$ 400,00 saliendo de Río de Janeiro (Centro).",
       },
 
       "cabo-frio": {
@@ -577,7 +595,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año, especialmente verano",
-        estimatedCost: "Desde R$ 75,00 hasta R$ 110,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan en R$ 80,00 saliendo de Búzios y desde R$ 400,00 saliendo de Río de Janeiro (Centro).",
       },
 
       "sao-pedro": {
@@ -595,7 +614,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año",
-        estimatedCost: "Desde R$ 65,00 hasta R$ 100,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan en R$ 80,00 saliendo de Búzios y desde R$ 400,00 saliendo de Río de Janeiro (Centro).",
       },
 
       "rio-ostras": {
@@ -613,7 +633,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año",
-        estimatedCost: "Desde R$ 70,00 hasta R$ 105,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan en R$ 120,00 saliendo de Búzios y desde R$ 450,00 saliendo de Río de Janeiro (Centro).",
       },
 
       macae: {
@@ -631,7 +652,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Primavera y verano",
-        estimatedCost: "Desde R$ 90,00 hasta R$ 130,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan en R$ 150,00 saliendo de Búzios y desde R$ 500,00 saliendo de Río de Janeiro (Centro).",
       },
 
       araruama: {
@@ -649,7 +671,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año, especialmente invierno",
-        estimatedCost: "Desde R$ 50,00 hasta R$ 85,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan en R$ 200,00 saliendo de Búzios y desde R$ 300,00 saliendo de Río de Janeiro (Centro).",
       },
 
       iguaba: {
@@ -667,7 +690,8 @@ export const translationsLagos = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año",
-        estimatedCost: "Desde R$ 70,00 hasta R$ 110,00 desde el centro de Río",
+        estimatedCost:
+          "Los precios comienzan en R$ 150,00 saliendo de Búzios y desde R$ 350,00 saliendo de Río de Janeiro (Centro).",
       },
     },
   },

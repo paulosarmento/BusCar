@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const { destinations, notes, cel } = body;
+    const { destinations, notes, cel, contact } = body;
 
     const destinationsText =
       destinations && destinations.length > 0
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
           fields: [
             {
               name: "👤 Solicitante",
-              value: "Anonimo",
+              value: contact,
             },
             {
               name: "📞 Celular",

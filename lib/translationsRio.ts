@@ -82,7 +82,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo, especialmente no verão (dezembro a fevereiro)",
-        estimatedCost: "A partir de R$ 25,00",
+        estimatedCost: "Valores a partir de R$ 450,00 saindo de Búzios",
       },
       "cristo-redentor": {
         name: "Cristo Redentor",
@@ -99,7 +99,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Dias claros, evitar dias muito nublados",
-        estimatedCost: "A partir de R$ 30,00",
+        estimatedCost: "Valores a partir de R$ 550,00 saindo de Búzios",
       },
       ipanema: {
         name: "Ipanema",
@@ -116,7 +116,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo, especialmente finais de semana",
-        estimatedCost: "A partir de R$ 28,00",
+        estimatedCost: "Valores a partir de R$ 450,00 saindo de Búzios",
       },
       galeao: {
         name: "Galeão - Aeroporto Internacional",
@@ -133,7 +133,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Disponível 24 horas",
-        estimatedCost: "A partir de R$ 45,00 até o centro",
+        estimatedCost: "Valores a partir de R$ 450,00 saindo de Búzios",
       },
       "santos-dumont": {
         name: "Santos Dumont - Aeroporto Central",
@@ -150,7 +150,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Disponível 24 horas",
-        estimatedCost: "A partir de R$ 20,00 até o centro",
+        estimatedCost: "Valores a partir de R$ 450,00 saindo de Búzios",
       },
       rodoviario: {
         name: "Rodoviário Novo Rio",
@@ -167,7 +167,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Disponível 24 horas, evitar horários de pico",
-        estimatedCost: "A partir de R$ 15,00 até o centro",
+        estimatedCost: "Valores a partir de R$ 450,00 saindo de Búzios",
       },
       "monte-verde": {
         name: "Monte Verde",
@@ -184,7 +184,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "O ano todo",
-        estimatedCost: "A partir de R$ 22,00 até o centro",
+        estimatedCost: "Valores a partir de R$ 450,00 saindo de Búzios",
       },
       centro: {
         name: "Centro Histórico",
@@ -201,7 +201,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Durante o dia para turismo",
-        estimatedCost: "A partir de R$ 15,00 até zona sul",
+        estimatedCost: "Valores a partir de R$ 450,00 saindo de Búzios",
       },
     },
     regiaoRioTitulo: "Viagens no Rio de Janeiro",
@@ -300,7 +300,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "All year round, especially summer (December to February)",
-        estimatedCost: "Starting from R$ 25.00",
+        estimatedCost: "Prices starting from R$ 450.00 departing from Búzios.",
       },
 
       "cristo-redentor": {
@@ -318,7 +318,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Clear days, avoid very cloudy weather",
-        estimatedCost: "Starting from R$ 30.00",
+        estimatedCost: "Prices starting from R$ 550.00 departing from Búzios.",
       },
 
       ipanema: {
@@ -336,7 +336,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "All year round, especially on weekends",
-        estimatedCost: "Starting from R$ 28.00",
+        estimatedCost: "Prices starting from R$ 450.00 departing from Búzios.",
       },
 
       galeao: {
@@ -354,7 +354,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Available 24 hours",
-        estimatedCost: "Starting from R$ 45.00 to downtown",
+        estimatedCost: "Prices starting from R$ 450.00 departing from Búzios.",
       },
 
       "santos-dumont": {
@@ -372,7 +372,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Available 24 hours",
-        estimatedCost: "Starting from R$ 20.00 to downtown",
+        estimatedCost: "Prices starting from R$ 450.00 departing from Búzios.",
       },
 
       rodoviario: {
@@ -390,7 +390,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Available 24 hours, avoid peak hours",
-        estimatedCost: "Starting from R$ 15.00 to downtown",
+        estimatedCost: "Prices starting from R$ 450.00 departing from Búzios.",
       },
 
       "monte-verde": {
@@ -408,7 +408,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "All year round",
-        estimatedCost: "Starting from R$ 22.00 to downtown",
+        estimatedCost: "Prices starting from R$ 450.00 departing from Búzios.",
       },
 
       centro: {
@@ -426,7 +426,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Daytime for sightseeing",
-        estimatedCost: "Starting from R$ 15.00 to the South Zone",
+        estimatedCost: "Prices starting from R$ 450.00 departing from Búzios.",
       },
     },
     regiaoRioTitulo: "Trips in Rio de Janeiro",
@@ -524,7 +524,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año, especialmente en verano (diciembre a febrero)",
-        estimatedCost: "Desde R$ 25,00",
+        estimatedCost: "Precios a partir de R$ 450,00 saliendo desde Búzios.",
       },
 
       "cristo-redentor": {
@@ -542,7 +542,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Días despejados, evitar días muy nublados",
-        estimatedCost: "Desde R$ 30,00",
+        estimatedCost: "Precios a partir de R$ 550,00 saliendo desde Búzios.",
       },
 
       ipanema: {
@@ -560,7 +560,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año, especialmente los fines de semana",
-        estimatedCost: "Desde R$ 28,00",
+        estimatedCost: "Precios a partir de R$ 450,00 saliendo desde Búzios.",
       },
 
       galeao: {
@@ -578,7 +578,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Disponible las 24 horas",
-        estimatedCost: "Desde R$ 45,00 hasta el centro",
+        estimatedCost: "Precios a partir de R$ 450,00 saliendo desde Búzios.",
       },
 
       "santos-dumont": {
@@ -596,7 +596,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Disponible las 24 horas",
-        estimatedCost: "Desde R$ 20,00 hasta el centro",
+        estimatedCost: "Precios a partir de R$ 450,00 saliendo desde Búzios.",
       },
 
       rodoviario: {
@@ -614,7 +614,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Disponible las 24 horas, evitar horas pico",
-        estimatedCost: "Desde R$ 15,00 hasta el centro",
+        estimatedCost: "Precios a partir de R$ 450,00 saliendo desde Búzios.",
       },
 
       "monte-verde": {
@@ -632,7 +632,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Todo el año",
-        estimatedCost: "Desde R$ 22,00 hasta el centro",
+        estimatedCost: "Precios a partir de R$ 450,00 saliendo desde Búzios.",
       },
 
       centro: {
@@ -650,7 +650,7 @@ export const translationsRio = {
         ],
         passengers: "1-4",
         bestTime: "Durante el día para turismo",
-        estimatedCost: "Desde R$ 15,00 hasta la Zona Sur",
+        estimatedCost: "Precios a partir de R$ 450,00 saliendo desde Búzios.",
       },
     },
     regiaoRioTitulo: "Viajes en el Rio de Janeiro",

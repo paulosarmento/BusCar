@@ -7,6 +7,9 @@ export const translations = {
     reservar: "Reservar",
     contato: "Contato",
     preco: "Precos",
+    consultarPreco: "Consultar Preco",
+    colocarNumero: "Coloque seu telefone",
+    nome: "Nome",
 
     tourPersonalizado: {
       celular: "Celular",
@@ -47,7 +50,10 @@ export const translations = {
     sobre: "About",
     contato: "Contact",
     reservar: "Reserve",
-    preco: "Precos",
+    preco: "Prices",
+    consultarPreco: "Consult Price",
+    colocarNumero: "Put your phone number",
+    nome: "Name",
 
     tourPersonalizado: {
       celular: "Cellphone",
@@ -87,7 +93,10 @@ export const translations = {
     sobre: "Acerca de",
     contato: "Contacto",
     reservar: "Reservar",
-    preco: "Precos",
+    preco: "Precios",
+    consultarPreco: "Consultar Precio",
+    colocarNumero: "Coloque su telefono",
+    nome: "Nombre",
 
     tourPersonalizado: {
       celular: "Celular",

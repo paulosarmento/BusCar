@@ -8,6 +8,7 @@ import { Card } from "@/app/components/card";
 import { Button } from "@/app/components/button";
 import toast, { Toaster } from "react-hot-toast";
 import { WA_LINK } from "@/lib/whatsApp";
+import Header from "@/app/components/Header";
 
 interface Destination {
   id: string;
@@ -24,6 +25,7 @@ export default function CustomTourBuilder() {
   const [customDestination, setCustomDestination] = useState("");
   const [notes, setNotes] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [contact, setContact] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleToggleDestination = (destination: Destination) => {
@@ -73,6 +75,7 @@ export default function CustomTourBuilder() {
           destinations: selectedDestinations,
           notes: notes,
           cel: phoneNumber,
+          contact: contact,
         }),
       });
 
@@ -110,19 +113,47 @@ export default function CustomTourBuilder() {
       ? "6-8 horas"
       : "8-12 horas";
 
+  const formatPhone = (value: string) => {
+    const numbers = value.replace(/\D/g, "");
+
+    if (!numbers) return "";
+
+    let formatted = "";
+    let i = 0;
+
+    if (numbers.length >= 1) {
+      formatted += "+" + numbers.slice(i, i + 2);
+      i += 2;
+    }
+
+    if (numbers.length >= 3) {
+      formatted += " (" + numbers.slice(i, i + 2);
+      i += 2;
+    }
+
+    if (numbers.length >= 5) {
+      formatted += ") " + numbers.slice(i, i + 5);
+      i += 5;
+    }
+
+    if (numbers.length >= 10) {
+      formatted += "-" + numbers.slice(i, i + 4);
+    }
+
+    return formatted;
+  };
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "phone") {
-      setPhoneNumber(
-        value.replace(/\D/g, "").slice(0, 11) // apenas números
-      );
-      return;
+      setPhoneNumber(formatPhone(value));
     }
   };
 
   return (
     <div>
+      <Header />
       <Toaster position="top-center" />
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-12">
@@ -151,6 +182,20 @@ export default function CustomTourBuilder() {
                 {t.tourPersonalizado.descricao}
               </p>
             </Card>
+            {/* Nome */}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">
+                {t.nome}
+              </h2>
+              <input
+                type="text"
+                name="name"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground"
+              />
+            </div>
+
             {/* Celular para contato */}
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-4">
@@ -158,7 +203,7 @@ export default function CustomTourBuilder() {
               </h2>
               {phoneNumber === "" && (
                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-3 rounded-lg mb-4">
-                  "Coloque o numero do celular 444"
+                  {t.colocarNumero}
                 </div>
               )}
               <input
@@ -167,7 +212,7 @@ export default function CustomTourBuilder() {
                 value={phoneNumber}
                 onChange={handlePhoneChange}
                 inputMode="numeric"
-                pattern="[0-9]*"
+                pattern="[0-13]*"
                 placeholder="+00 (00) 00000-4444"
                 className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground"
               />
@@ -328,10 +373,10 @@ export default function CustomTourBuilder() {
 
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">
-                    {t.preco}444
+                    {t.preco}
                   </p>
                   <p className="text-lg font-semibold text-foreground">
-                    A consultar 444
+                    {t.consultarPreco}
                   </p>
                 </div>
               </div>
@@ -363,7 +408,9 @@ export default function CustomTourBuilder() {
               <Button
                 onClick={handleRequestQuote}
                 disabled={
-                  selectedDestinations.length === 0 || phoneNumber === ""
+                  selectedDestinations.length === 0 ||
+                  phoneNumber === "" ||
+                  phoneNumber.length < 19
                 }
                 className="w-full mt-6"
               >
