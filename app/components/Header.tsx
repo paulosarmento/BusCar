@@ -1,6 +1,4 @@
 "use client";
-
-import Image from "next/image";
 import { Menu, MessageCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
@@ -29,15 +27,17 @@ export default function Header() {
   const t = translations[language];
 
   const Reserve = () => (
-    <a
-      href={WA_LINK}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-xl shadow-md hover:scale-105 transition"
-    >
-      <MessageCircle className="w-5 h-5" />
-      {t.reservar}
-    </a>
+    <>
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-xl shadow-md hover:scale-105 transition"
+      >
+        <MessageCircle className="w-5 h-5" />
+        {t.reservar}
+      </a>
+    </>
   );
 
   const LinksMenu = () => (
@@ -59,7 +59,15 @@ export default function Header() {
           <LinksMenu />
         </nav>
 
-        <Reserve />
+        <div className="flex items-center gap-3">
+          <Reserve />
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center rounded-xl border border-[#005F8C] px-3 py-1.5 text-sm font-medium text-[#005F8C] hover:bg-[#005F8C] hover:text-white transition-colors"
+          >
+            Login
+          </Link>
+        </div>
 
         {/* Menu mobile toggle */}
         <button
@@ -80,6 +88,12 @@ export default function Header() {
         <div className="md:hidden bg-white/95 backdrop-blur-sm shadow-md">
           <nav className="flex flex-col px-6 py-4 gap-4">
             <LinksMenu />
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center rounded-xl border border-[#005F8C] px-3 py-1.5 text-sm font-medium text-[#005F8C] hover:bg-[#005F8C] hover:text-white transition-colors"
+            >
+              Login
+            </Link>
           </nav>
         </div>
       )}
