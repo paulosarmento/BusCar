@@ -1,8 +1,9 @@
-import { adminDb } from "@/lib/firebase-admin";
+import { getAdminDb } from "@/lib/firebase-admin";
 
 export async function listarTudoFirestore() {
-  const collections = await adminDb.listCollections();
+  const adminDb = getAdminDb();
 
+  const collections = await adminDb.listCollections();
   const result: Record<string, any[]> = {};
 
   for (const col of collections) {
