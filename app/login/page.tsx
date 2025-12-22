@@ -3,19 +3,11 @@
 import type React from "react";
 
 import { useState } from "react";
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Plane, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Input } from "../components/input";
 import { Button } from "../components/button";
-import { auth } from "@/lib/firebase";
-
-const googleProvider = new GoogleAuthProvider();
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -28,28 +20,59 @@ export default function LoginPage() {
     setError("");
 
     try {
+      const { auth, getFirebaseError } = await import("@/lib/firebase");
+      const { signInWithEmailAndPassword } = await import("firebase/auth");
+      
       if (!auth) {
-        setError("Erro de configuração. Tente novamente.");
+        const firebaseError = getFirebaseError?.();
+        setError(
+          firebaseError 
+            ? `Erro de configuração: ${firebaseError}. Verifique as variáveis de ambiente.`
+            : "Erro de configuração do Firebase. Verifique as variáveis de ambiente."
+        );
         return;
       }
+      
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/firebase");
-    } catch {
-      setError("Email ou senha inválidos");
+    } catch (err: any) {
+      if (err?.code === "auth/invalid-email" || err?.code === "auth/user-not-found" || err?.code === "auth/wrong-password") {
+        setError("Email ou senha inválidos");
+      } else if (err?.code === "auth/invalid-api-key") {
+        setError("Erro de configuração: API Key do Firebase inválida. Verifique as variáveis de ambiente.");
+      } else {
+        setError(err?.message || "Erro ao fazer login. Tente novamente.");
+      }
     }
   }
 
   async function handleGoogleLogin() {
     try {
+      const { auth, getFirebaseError } = await import("@/lib/firebase");
+      const { GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
+      
       if (!auth) {
-        setError("Erro de configuração. Tente novamente.");
+        const firebaseError = getFirebaseError?.();
+        setError(
+          firebaseError 
+            ? `Erro de configuração: ${firebaseError}. Verifique as variáveis de ambiente.`
+            : "Erro de configuração do Firebase. Verifique as variáveis de ambiente."
+        );
         return;
       }
+      
+      const googleProvider = new GoogleAuthProvider();
       await signInWithPopup(auth, googleProvider);
       router.push("/firebase");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("Erro ao autenticar com Google");
+      if (err?.code === "auth/invalid-api-key") {
+        setError("Erro de configuração: API Key do Firebase inválida. Verifique as variáveis de ambiente.");
+      } else if (err?.code === "auth/popup-closed-by-user") {
+        setError("Login cancelado");
+      } else {
+        setError(err?.message || "Erro ao autenticar com Google");
+      }
     }
   }
 
