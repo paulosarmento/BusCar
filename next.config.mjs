@@ -9,6 +9,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Exclude authentication pages from static generation
+  async generateBuildId() {
+    return 'build-' + Date.now();
+  },
 }
 
 export default nextConfig

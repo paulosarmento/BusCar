@@ -1,8 +1,8 @@
 "use client";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged, signOut, type User } from "firebase/auth";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { User } from "firebase/auth";
 import {
   Card,
   CardContent,
@@ -19,6 +19,36 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+
+  useEffect(() => {
+    // Dynamically import Firebase only on client side
+    let unsubscribe: (() => void) | null = null;
+
+    import("@/lib/firebase").then(({ auth }) => {
+      if (!auth) {
+        router.push("/login");
+        return;
+      }
+
+      import("firebase/auth").then(({ onAuthStateChanged }) => {
+        unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          if (!currentUser) {
+            router.push("/login");
+          } else {
+            setUser(currentUser);
+            setAuthReady(true);
+          }
+        });
+      });
+    });
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [router]);
 
   useEffect(() => {
     fetch("/api/firebase")
@@ -29,20 +59,7 @@ export default function Home() {
       });
   }, []);
 
-  useEffect(() => {
-    // if (!auth) return;
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) {
-        router.push("/login");
-      } else {
-        setUser(currentUser);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
-  if (!user || loading) {
+  if (!user || loading || !authReady) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-ocean to-ocean-dark">
         <div className="flex flex-col items-center gap-4">
@@ -54,8 +71,11 @@ export default function Home() {
   }
 
   async function logout() {
-    // if (!auth) return;
+    const { auth } = await import("@/lib/firebase");
+    if (!auth) return;
+    const { signOut } = await import("firebase/auth");
     await signOut(auth);
+    router.push("/login");
   }
 
   const getCollectionIcon = (collectionName: string) => {
