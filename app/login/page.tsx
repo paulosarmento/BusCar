@@ -28,7 +28,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      if (auth === null) return;
+      // if (auth === null) return;
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/firebase");
     } catch {
@@ -38,7 +38,7 @@ export default function LoginPage() {
 
   async function handleGoogleLogin() {
     try {
-      if (auth === null) return;
+      // if (auth === null) return;
       await signInWithPopup(auth, googleProvider);
       router.push("/firebase");
     } catch (err) {
