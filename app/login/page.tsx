@@ -8,12 +8,12 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Plane, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Input } from "../components/input";
 import { Button } from "../components/button";
+import { auth } from "@/lib/firebase";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -28,6 +28,7 @@ export default function LoginPage() {
     setError("");
 
     try {
+      if (auth === null) return;
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/firebase");
     } catch {
@@ -37,6 +38,7 @@ export default function LoginPage() {
 
   async function handleGoogleLogin() {
     try {
+      if (auth === null) return;
       await signInWithPopup(auth, googleProvider);
       router.push("/firebase");
     } catch (err) {
