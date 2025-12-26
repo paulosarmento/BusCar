@@ -22,30 +22,35 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {t.equipe.map((membro: any, index: number) => (
               <div
                 key={index}
-                className="bg-background rounded-lg overflow-hidden shadow-lg"
+                className="bg-background rounded-xl border border-border p-5 text-center shadow-sm hover:shadow-md transition"
               >
-                <div className="aspect-square relative bg-primary/10">
+                {/* Avatar */}
+                <div className="w-24 h-24 mx-auto rounded-full overflow-hidden bg-primary/10 mb-4">
                   <img
                     src={`/team/${membro.foto}`}
                     alt={membro.nome}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-1 text-foreground">
-                    {membro.nome}
-                  </h3>
-                  <p className="text-primary font-medium mb-3">
-                    {membro.cargo}
-                  </p>
-                  <p className="text-muted-foreground text-sm">
-                    {membro.descricao}
-                  </p>
-                </div>
+
+                {/* Nome */}
+                <h3 className="text-lg font-semibold text-foreground">
+                  {membro.nome}
+                </h3>
+
+                {/* Cargo */}
+                <p className="text-sm text-primary font-medium mb-2">
+                  {membro.cargo}
+                </p>
+
+                {/* Descrição */}
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
+                  {membro.descricao}
+                </p>
               </div>
             ))}
           </div>

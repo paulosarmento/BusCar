@@ -41,13 +41,7 @@ export const translationsHome = {
           "Mais de 15 anos de experiência nas estradas do Rio e Região dos Lagos. Conhecimento profundo das rotas e comprometido com sua segurança.",
         foto: "paulo.png",
       },
-      {
-        nome: "Márcia Rodrigues",
-        cargo: "Guia Turística",
-        descricao:
-          "Apaixonada pela história e cultura do Rio. Formada em turismo, oferece explicações detalhadas sobre cada ponto turístico.",
-        foto: "marcia.png",
-      },
+
       {
         nome: "Caio Lins",
         cargo: "Motorista Tours",
@@ -97,13 +91,7 @@ export const translationsHome = {
           "Over 15 years of experience on Rio and Lagos Region roads. Deep knowledge of routes and committed to your safety.",
         foto: "paulo.png",
       },
-      {
-        nome: "Márcia Rodrigues",
-        cargo: "Tour Guide",
-        descricao:
-          "Passionate about Rio's history and culture. Tourism degree holder, offers detailed explanations about each tourist spot.",
-        foto: "marcia.png",
-      },
+
       {
         nome: "Caio Lins",
         cargo: "Tour Driver",
@@ -153,13 +141,7 @@ export const translationsHome = {
           "Más de 15 años de experiencia en las carreteras de Río y Región de los Lagos. Conocimiento profundo de las rutas y comprometido con tu seguridad.",
         foto: "paulo.png",
       },
-      {
-        nome: "Márcia Rodrigues",
-        cargo: "Guía Turística",
-        descricao:
-          "Apasionada por la historia y cultura de Río. Licenciada en turismo, ofrece explicaciones detalladas sobre cada punto turístico.",
-        foto: "marcia.png",
-      },
+
       {
         nome: "Caio Lins",
         cargo: "Conductor de Tours",
