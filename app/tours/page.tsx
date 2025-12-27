@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Header from "../components/Header";
-import { Card } from "../components/card";
+import { Card } from "../components/Ui/card";
 import { useLanguage } from "../context/LanguageContext";
 import { translationsTours } from "@/lib/translationsTours";
 

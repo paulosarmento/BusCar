@@ -1,5 +1,5 @@
 "use client";
-import { Card } from "@/app/components/card";
+import { Card } from "@/app/components/Ui/card";
 import Header from "@/app/components/Header";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { translationsTours } from "@/lib/translationsTours";

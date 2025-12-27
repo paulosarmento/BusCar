@@ -6,8 +6,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plane, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Input } from "../components/input";
-import { Button } from "../components/button";
+import { Input } from "../components/Ui/input";
+import { Button } from "../components/Ui/button";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

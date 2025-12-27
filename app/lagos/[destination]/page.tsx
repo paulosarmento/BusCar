@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { ArrowLeft, MapPin, Users, Clock } from "lucide-react";
 import Header from "@/app/components/Header";
-import { Button } from "@/app/components/button";
+import { Button } from "@/app/components/Ui/button";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { translationsLagos } from "@/lib/translationsLagos";
 import React from "react";
