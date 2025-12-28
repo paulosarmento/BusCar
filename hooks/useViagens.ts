@@ -1,26 +1,8 @@
 "use client";
 
+import { UseViagensProps, Viagem, ViagemFormData } from "@/types/types";
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
-
-export interface Viagem {
-  id: string;
-  carroId: string;
-  dataHora: string;
-  capacidadeMax: number;
-  status: "aberta" | "fechada" | string;
-  createdAt?: string;
-}
-
-export interface ViagemFormData {
-  carroId: string;
-  dataHora: string;
-  capacidadeMax: number;
-  status: string;
-}
-
-interface UseViagensProps {
-  fetchData: () => Promise<void>;
-}
 
 export function useViagens({ fetchData }: UseViagensProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -50,7 +32,7 @@ export function useViagens({ fetchData }: UseViagensProps) {
 
     let dataHoraFormatted = "";
     if (viagem.dataHora) {
-      const date = new Date(viagem.dataHora);
+      const date = new Date(viagem.dataHora as string);
       if (!isNaN(date.getTime())) {
         dataHoraFormatted = date.toISOString().slice(0, 16);
       }

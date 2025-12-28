@@ -1,11 +1,7 @@
 "use client";
 
+import { FirebaseData } from "@/types/types";
 import { useState } from "react";
-
-export interface FirebaseData {
-  carros: any[];
-  viagens: any[];
-}
 
 export function useFirebaseData() {
   const [data, setData] = useState<FirebaseData>({

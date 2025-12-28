@@ -15,7 +15,7 @@ import {
 } from "../components/Ui/tabs";
 import { Car, Calendar, Plus, BarChart3, MapPin } from "lucide-react";
 import { StatsCard } from "../components/StatsCard";
-import { useAuthGuard } from "../hooks/useAuthGuard";
+import { useAuthGuard } from "../../hooks/useAuthGuard";
 import { HeaderAdm } from "../components/HeaderAdm";
 import { CarrosTab } from "../components/CarrosTab";
 import { ViagensTab } from "../components/ViagensTab";
@@ -23,10 +23,11 @@ import { AgendamentosTab } from "../components/AgendamentosTab";
 import { CarroDialog } from "../components/CarroDialog";
 import { ViagemDialog } from "../components/ViagemDialog";
 import { ReservaDialog } from "../components/ReservaDialog";
-import { Carro, useCarros } from "../hooks/useCarros";
-import { useViagens, Viagem } from "../hooks/useViagens";
-import { useReservas } from "../hooks/useReservas";
-import { useFirebaseData } from "../hooks/useFirebaseData";
+import { useCarros } from "../../hooks/useCarros";
+import { useViagens } from "../../hooks/useViagens";
+import { useReservas } from "../../hooks/useReservas";
+import { useFirebaseData } from "../../hooks/useFirebaseData";
+import { Carro, Viagem } from "@/types/types";
 
 export default function Home() {
   const user = useAuthGuard();
@@ -37,7 +38,7 @@ export default function Home() {
 
   const [activeTab, setActiveTab] = useState("carros");
 
-  const carrosAtivos = carros.filter((c) => c.Ativo).length;
+  const carrosAtivos = carros.filter((c) => c.ativo).length;
   // const carrosInativos = carros.filter((c: any) => !c.Ativo).length;
 
   const viagensAbertas = viagens.filter((v) => v.status === "aberta").length;
@@ -169,7 +170,6 @@ export default function Home() {
           <TabsContent value="carros" className="mt-0">
             <CarrosTab
               carros={carros}
-              activeTab={activeTab}
               onAdd={carrosHook.openAddDialog}
               onEdit={carrosHook.openEditDialog}
               onDelete={carrosHook.remove}

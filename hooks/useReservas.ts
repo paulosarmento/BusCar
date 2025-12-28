@@ -2,25 +2,12 @@
 
 import { useState } from "react";
 import type React from "react";
-import type { Viagem } from "./useViagens";
-
-export interface Reserva {
-  id: string;
-  viagemId: string;
-  usuarioId: string;
-  aceitaLotacao4: boolean;
-  status: "confirmada" | "cancelada" | string;
-  createdAt?: string;
-}
-
-export interface ReservaFormData {
-  aceitaLotacao4: boolean;
-}
-
-interface UseReservasProps {
-  userId: string | undefined;
-  fetchData: () => Promise<void>;
-}
+import {
+  Reserva,
+  ReservaFormData,
+  UseReservasProps,
+  Viagem,
+} from "@/types/types";
 
 export function useReservas({ userId, fetchData }: UseReservasProps) {
   const [reservas, setReservas] = useState<Reserva[]>([]);

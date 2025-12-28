@@ -18,20 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/Ui/select";
-
-export interface ViagemFormData {
-  carroId: string;
-  dataHora: string;
-  capacidadeMax: number;
-  status: string;
-}
-
-interface Carro {
-  id: string;
-  Modelo: string;
-  Placa: string;
-  Ativo: boolean;
-}
+import { Carro, ViagemFormData } from "@/types/types";
 
 interface ViagemDialogProps {
   open: boolean;
@@ -88,10 +75,10 @@ export function ViagemDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {carros
-                    .filter((c) => c.Ativo)
+                    .filter((c) => c.ativo)
                     .map((carro) => (
                       <SelectItem key={carro.id} value={carro.id}>
-                        {carro.Modelo} - {carro.Placa}
+                        {carro.modelo} - {carro.placa}
                       </SelectItem>
                     ))}
                 </SelectContent>

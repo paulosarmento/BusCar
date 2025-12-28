@@ -12,13 +12,7 @@ import { Button } from "../components/Ui/button";
 import { Input } from "../components/Ui/input";
 import { Label } from "../components/Ui/label";
 import { Switch } from "../components/Ui/switch";
-
-export interface CarroFormData {
-  Modelo: string;
-  Placa: string;
-  foto: string;
-  Ativo: boolean;
-}
+import { CarroFormData } from "@/types/types";
 
 interface CarroDialogProps {
   open: boolean;
@@ -64,9 +58,9 @@ export function CarroDialog({
               <Label htmlFor="modelo">Modelo</Label>
               <Input
                 id="modelo"
-                value={formData.Modelo}
+                value={formData.modelo}
                 onChange={(e) =>
-                  setFormData({ ...formData, Modelo: e.target.value })
+                  setFormData({ ...formData, modelo: e.target.value })
                 }
                 required
               />
@@ -76,11 +70,11 @@ export function CarroDialog({
               <Label htmlFor="placa">Placa</Label>
               <Input
                 id="placa"
-                value={formData.Placa}
+                value={formData.placa}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    Placa: e.target.value.toUpperCase(),
+                    placa: e.target.value.toUpperCase(),
                   })
                 }
                 required
@@ -102,12 +96,12 @@ export function CarroDialog({
               <Label>Status do Veículo</Label>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">
-                  {formData.Ativo ? "Ativo" : "Inativo"}
+                  {formData.ativo ? "Ativo" : "Inativo"}
                 </span>
                 <Switch
-                  checked={formData.Ativo}
+                  checked={formData.ativo}
                   onCheckedChange={(checked) =>
-                    setFormData({ ...formData, Ativo: checked })
+                    setFormData({ ...formData, ativo: checked })
                   }
                 />
               </div>

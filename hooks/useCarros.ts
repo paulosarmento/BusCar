@@ -1,50 +1,43 @@
 "use client";
 
+import { Carro, CarroFormData, UseCarrosParams } from "@/types/types";
 import { useState } from "react";
-
-export interface Carro {
-  id: string;
-  Modelo: string;
-  Placa: string;
-  Ativo: boolean;
-  foto: string;
-}
-
-export interface CarroFormData {
-  Modelo: string;
-  Placa: string;
-  Ativo: boolean;
-  foto: string;
-}
-
-interface UseCarrosParams {
-  fetchData: () => Promise<void>;
-}
 
 export function useCarros({ fetchData }: UseCarrosParams) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCar, setEditingCar] = useState<Carro | null>(null);
   const [formData, setFormData] = useState<CarroFormData>({
-    Modelo: "",
-    Placa: "",
-    Ativo: true,
+    modelo: "",
+    placa: "",
+    ativo: true,
     foto: "",
+    tipo: "carro",
+    capacidade: 4,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const openAddDialog = () => {
     setEditingCar(null);
-    setFormData({ Modelo: "", Placa: "", Ativo: true, foto: "" });
+    setFormData({
+      modelo: "",
+      placa: "",
+      ativo: true,
+      foto: "",
+      tipo: "carro",
+      capacidade: 4,
+    });
     setIsDialogOpen(true);
   };
 
   const openEditDialog = (carro: Carro) => {
     setEditingCar(carro);
     setFormData({
-      Modelo: carro.Modelo,
-      Placa: carro.Placa,
-      Ativo: carro.Ativo,
+      modelo: carro.modelo,
+      placa: carro.placa,
+      ativo: carro.ativo,
       foto: carro.foto || "",
+      tipo: carro.tipo,
+      capacidade: carro.capacidade,
     });
     setIsDialogOpen(true);
   };
@@ -52,13 +45,20 @@ export function useCarros({ fetchData }: UseCarrosParams) {
   const closeDialog = () => {
     setIsDialogOpen(false);
     setEditingCar(null);
-    setFormData({ Modelo: "", Placa: "", Ativo: true, foto: "" });
+    setFormData({
+      modelo: "",
+      placa: "",
+      ativo: true,
+      foto: "",
+      capacidade: 4,
+      tipo: "carro",
+    });
   };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-    if (!formData.Modelo || !formData.Placa) return;
+    if (!formData.modelo || !formData.placa) return;
 
     setIsSubmitting(true);
 

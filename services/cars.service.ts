@@ -1,4 +1,5 @@
 import { getFirestoreInstance } from "@/lib/firebase";
+import { Carro } from "@/types/types";
 import {
   addDoc,
   collection,
@@ -7,14 +8,6 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-
-export interface Carro {
-  id?: string;
-  Modelo: string;
-  Placa: string;
-  Ativo: boolean;
-  foto?: string;
-}
 
 export async function listarCarros() {
   const db = getFirestoreInstance();

@@ -20,21 +20,7 @@ import {
   Trash2,
   CheckCircle2,
 } from "lucide-react";
-
-export interface Viagem {
-  id: string;
-  carroId: string;
-  dataHora: string;
-  capacidadeMax: number;
-  status: string;
-}
-
-export interface Carro {
-  id: string;
-  Modelo: string;
-  Placa: string;
-  foto?: string;
-}
+import { Carro, Viagem } from "@/types/types";
 
 interface ViagensTabProps {
   viagens: Viagem[];
@@ -86,7 +72,7 @@ export function ViagensTab({
         </Card>
       ) : (
         <div className="grid gap-4">
-          {viagens.map((viagem) => {
+          {viagens.map((viagem: Viagem) => {
             const carro = getCarroById(viagem.carroId);
 
             return (
@@ -99,7 +85,7 @@ export function ViagensTab({
                     {carro?.foto ? (
                       <img
                         src={carro.foto}
-                        alt={carro.Modelo}
+                        alt={carro.modelo}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -115,10 +101,10 @@ export function ViagensTab({
                         <div className="space-y-1">
                           <CardTitle className="flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-primary" />
-                            {carro?.Modelo || "Carro não encontrado"}
+                            {carro?.modelo || "Carro não encontrado"}
                           </CardTitle>
                           <CardDescription className="font-mono">
-                            {carro?.Placa}
+                            {carro?.placa}
                           </CardDescription>
                         </div>
 
@@ -146,13 +132,12 @@ export function ViagensTab({
                             </p>
                             <p className="font-medium">
                               {viagem.dataHora
-                                ? new Date(viagem.dataHora).toLocaleString(
-                                    "pt-BR",
-                                    {
-                                      dateStyle: "short",
-                                      timeStyle: "short",
-                                    }
-                                  )
+                                ? new Date(
+                                    viagem.dataHora as string
+                                  ).toLocaleString("pt-BR", {
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  })
                                 : "Data não disponível"}
                             </p>
                           </div>

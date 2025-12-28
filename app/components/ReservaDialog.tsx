@@ -11,20 +11,7 @@ import {
 import { Button } from "../components/Ui/button";
 import { Checkbox } from "../components/Ui/checkbox";
 import { Label } from "../components/Ui/label";
-
-interface Viagem {
-  carroId: string;
-  dataHora: string;
-  capacidadeMax: number;
-}
-
-interface Carro {
-  Modelo: string;
-}
-
-interface ReservaFormData {
-  aceitaLotacao4: boolean;
-}
+import { Carro, ReservaFormData, Viagem } from "@/types/types";
 
 interface ReservaDialogProps {
   open: boolean;
@@ -67,16 +54,19 @@ export function ReservaDialog({
             <div className="rounded-lg bg-muted p-4 space-y-2">
               <div className="flex justify-between">
                 <span>Carro:</span>
-                <span>{getCarroById(viagem?.carroId || "")?.Modelo}</span>
+                <span>{getCarroById(viagem?.carroId || "")?.modelo}</span>
               </div>
               <div className="flex justify-between">
                 <span>Data e Hora:</span>
                 <span>
                   {viagem?.dataHora
-                    ? new Date(viagem.dataHora).toLocaleString("pt-BR", {
-                        dateStyle: "short",
-                        timeStyle: "short",
-                      })
+                    ? new Date(viagem.dataHora as string).toLocaleString(
+                        "pt-BR",
+                        {
+                          dateStyle: "short",
+                          timeStyle: "short",
+                        }
+                      )
                     : ""}
                 </span>
               </div>

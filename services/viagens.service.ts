@@ -1,4 +1,5 @@
 import { getFirestoreInstance } from "@/lib/firebase";
+import { Carro, Viagem } from "@/types/types";
 import {
   collection,
   getDocs,
@@ -13,15 +14,6 @@ import {
   orderBy,
   onSnapshot,
 } from "firebase/firestore";
-
-export interface Viagem {
-  id?: string;
-  dataHora: Date | Timestamp | string;
-  carroId: string;
-  capacidadeMax: number;
-  status: "aberta" | "fechada" | "cancelada";
-  createdAt?: Date | Timestamp | string;
-}
 
 export async function listarViagens() {
   const db = getFirestoreInstance();
@@ -57,8 +49,8 @@ export async function adicionarViagem(
     throw new Error("Carro não encontrado");
   }
 
-  const carroData = carroDoc.data();
-  if (!carroData.Ativo) {
+  const carroData = carroDoc.data() as Carro;
+  if (!carroData.ativo) {
     throw new Error(
       "Carro não está ativo. Apenas carros ativos podem ter viagens agendadas."
     );
@@ -122,8 +114,8 @@ export async function editarViagem(id: string, viagem: Partial<Viagem>) {
       throw new Error("Carro não encontrado");
     }
 
-    const carroData = carroDoc.data();
-    if (!carroData.Ativo) {
+    const carroData = carroDoc.data() as Carro;
+    if (!carroData.ativo) {
       throw new Error("Carro não está ativo");
     }
   }
@@ -212,7 +204,6 @@ export async function listarViagensDisponiveis() {
   return querySnapshot.docs.map((doc) => {
     const data = doc.data();
     return {
-      id: doc.id,
       ...data,
       dataHora:
         data.dataHora instanceof Timestamp

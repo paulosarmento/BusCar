@@ -1,4 +1,5 @@
 import { getFirestoreInstance } from "@/lib/firebase";
+import { Reserva } from "@/types/types";
 import {
   collection,
   getDocs,
@@ -13,15 +14,6 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-
-export interface Reserva {
-  id?: string;
-  viagemId: string;
-  usuarioId: string;
-  aceitaLotacao4: boolean;
-  status: "confirmada" | "cancelada" | "concluida";
-  createdAt?: Date | Timestamp;
-}
 
 export async function listarReservas() {
   const db = getFirestoreInstance();

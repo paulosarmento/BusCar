@@ -8,8 +8,16 @@ import {
 import { Button } from "./Ui/button";
 import { Badge } from "./Ui/badge";
 import { Car, Plus, Edit, Trash2 } from "lucide-react";
+import { Carro } from "@/types/types";
 
-export function CarrosTab({ carros, onAdd, onEdit, onDelete }: any) {
+interface CarrosTabProps {
+  carros: Carro[];
+  onAdd: () => void;
+  onEdit: (carro: Carro) => void;
+  onDelete: (id: string) => void;
+}
+
+export function CarrosTab({ carros, onAdd, onEdit, onDelete }: CarrosTabProps) {
   if (carros.length === 0) {
     return (
       <Card className="border-dashed">
@@ -34,30 +42,30 @@ export function CarrosTab({ carros, onAdd, onEdit, onDelete }: any) {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-      {carros.map((carro: any) => (
+      {carros.map((carro) => (
         <Card key={carro.id} className="group overflow-hidden">
           <div className="aspect-video bg-muted flex items-center justify-center relative">
             {carro.foto ? (
               <img
                 src={carro.foto}
-                alt={carro.Modelo}
+                alt={carro.modelo}
                 className="w-full h-full object-cover group-hover:scale-105 transition"
               />
             ) : (
               <Car className="w-16 h-16 text-muted-foreground" />
             )}
             <Badge
-              variant={carro.Ativo ? "default" : "destructive"}
+              variant={carro.ativo ? "default" : "destructive"}
               className="absolute top-3 right-3"
             >
-              {carro.Ativo ? "Ativo" : "Inativo"}
+              {carro.ativo ? "Ativo" : "Inativo"}
             </Badge>
           </div>
 
           <CardHeader>
-            <CardTitle>{carro.Modelo}</CardTitle>
+            <CardTitle>{carro.modelo}</CardTitle>
             <CardDescription className="font-mono">
-              {carro.Placa}
+              {carro.placa}
             </CardDescription>
           </CardHeader>
 

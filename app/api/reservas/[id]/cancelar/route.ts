@@ -6,9 +6,9 @@ export async function POST(
   context: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
-    console.log("[v0] Cancelando reserva:", id);
+    // console.log("[v0] Cancelando reserva:", id);
 
     const reserva = await cancelarReserva(id);
 

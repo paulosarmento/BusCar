@@ -11,27 +11,7 @@ import { TabsContent } from "../components/Ui/tabs";
 import { Button } from "../components/Ui/button";
 import { Badge } from "../components/Ui/badge";
 import { Calendar, Car } from "lucide-react";
-
-export interface Reserva {
-  id: string;
-  viagemId: string;
-  status: "confirmada" | "cancelada" | string;
-  aceitaLotacao4: boolean;
-}
-
-export interface Viagem {
-  id: string;
-  carroId: string;
-  dataHora: string;
-  capacidadeMax: number;
-}
-
-export interface Carro {
-  id: string;
-  Modelo: string;
-  Placa: string;
-  foto?: string;
-}
+import { Carro, Reserva, Viagem } from "@/types/types";
 
 interface AgendamentosTabProps {
   reservas: Reserva[];
@@ -90,7 +70,7 @@ export function AgendamentosTab({
                     {carro?.foto ? (
                       <img
                         src={carro.foto}
-                        alt={carro.Modelo}
+                        alt={carro.modelo}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -104,10 +84,10 @@ export function AgendamentosTab({
                         <div>
                           <CardTitle className="flex items-center gap-2">
                             <Calendar className="w-5 h-5 text-primary" />
-                            {carro?.Modelo || "Carro não encontrado"}
+                            {carro?.modelo || "Carro não encontrado"}
                           </CardTitle>
                           <CardDescription className="font-mono">
-                            {carro?.Placa}
+                            {carro?.placa}
                           </CardDescription>
                         </div>
 
@@ -133,13 +113,12 @@ export function AgendamentosTab({
                           </p>
                           <p className="font-medium text-sm">
                             {viagem?.dataHora
-                              ? new Date(viagem.dataHora).toLocaleString(
-                                  "pt-BR",
-                                  {
-                                    dateStyle: "short",
-                                    timeStyle: "short",
-                                  }
-                                )
+                              ? new Date(
+                                  viagem.dataHora as string
+                                ).toLocaleString("pt-BR", {
+                                  dateStyle: "short",
+                                  timeStyle: "short",
+                                })
                               : "N/A"}
                           </p>
                         </div>
