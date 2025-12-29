@@ -1,9 +1,8 @@
 "use client";
 
-import type React from "react";
 import { getAuthInstance } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "../components/Ui/button";
@@ -27,21 +26,23 @@ import { useCarros } from "../../hooks/useCarros";
 import { useViagens } from "../../hooks/useViagens";
 import { useReservas } from "../../hooks/useReservas";
 import { useFirebaseData } from "../../hooks/useFirebaseData";
-import { Carro, Viagem } from "@/types/types";
+import { TabKey } from "@/types/types";
 
 export default function Home() {
   const user = useAuthGuard();
   const router = useRouter();
-  const { data, loading, fetchData } = useFirebaseData();
-  const carros: Carro[] = data.carros;
-  const viagens: Viagem[] = data.viagens;
+  const {
+    data,
+    loading,
+    fetchData,
+    carrosAtivos,
+    viagensAbertas,
+    carrosInativos,
+    carros,
+    viagens,
+  } = useFirebaseData();
 
-  const [activeTab, setActiveTab] = useState("carros");
-
-  const carrosAtivos = carros.filter((c) => c.ativo).length;
-  // const carrosInativos = carros.filter((c: any) => !c.Ativo).length;
-
-  const viagensAbertas = viagens.filter((v) => v.status === "aberta").length;
+  const [activeTab, setActiveTab] = useState<TabKey>("carros");
 
   const carrosMap = useMemo(
     () => new Map(carros.map((c) => [c.id, c])),
@@ -53,8 +54,15 @@ export default function Home() {
     [viagens]
   );
 
-  const getCarroById = (id: string) => carrosMap.get(id);
-  const getViagemById = (id: string) => viagensMap.get(id);
+  const getCarroById = useCallback(
+    (id: string) => carrosMap.get(id),
+    [carrosMap]
+  );
+
+  const getViagemById = useCallback(
+    (id: string) => viagensMap.get(id),
+    [viagensMap]
+  );
 
   const carrosHook = useCarros({ fetchData });
   const viagensHook = useViagens({ fetchData });
@@ -66,7 +74,6 @@ export default function Home() {
   useEffect(() => {
     fetchData();
     reservasHook.fetchReservas();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const reservasConfirmadas = reservasHook.reservasConfirmadas;
@@ -83,21 +90,20 @@ export default function Home() {
     );
   }
 
-  async function logout() {
-    const auth = getAuthInstance();
-    await signOut(auth);
-    router.push("/login");
-  }
+  const logout = async () => {
+    try {
+      await signOut(getAuthInstance());
+      router.replace("/login");
+    } catch (err) {
+      console.error("Erro ao fazer logout", err);
+    }
+  };
 
-  const viagemButtonLabel =
-    carrosAtivos === 0
-      ? "Cadastre um carro ativo primeiro"
-      : "Cadastrar Viagem";
+  const hasCarrosAtivos = carrosAtivos.length > 0;
 
-  const reservaButtonLabel =
-    carrosAtivos === 0
-      ? "Cadastre um carro ativo primeiro"
-      : "Cadastrar Reserva";
+  const viagemButtonLabel = hasCarrosAtivos
+    ? "Cadastrar Viagem"
+    : "Cadastre um carro ativo primeiro";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -113,7 +119,7 @@ export default function Home() {
           />
           <StatsCard
             title="Carros Ativos"
-            value={carrosAtivos}
+            value={carrosAtivos.length}
             icon={<BarChart3 className="w-4 h-4" />}
             borderColor="border-l-4 border-l-blue-500"
           />
@@ -131,7 +137,11 @@ export default function Home() {
           />
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as TabKey)}
+          className="w-full"
+        >
           <div className="flex items-center justify-between mb-6">
             <TabsList>
               <TabsTrigger value="carros" className="gap-2">
@@ -159,7 +169,7 @@ export default function Home() {
               <Button
                 className="gap-2"
                 onClick={viagensHook.openAddDialog}
-                disabled={carrosAtivos === 0}
+                disabled={!hasCarrosAtivos}
               >
                 <Plus className="w-4 h-4" />
                 {viagemButtonLabel}
@@ -169,17 +179,19 @@ export default function Home() {
 
           <TabsContent value="carros" className="mt-0">
             <CarrosTab
-              carros={carros}
+              carrosAtivos={carrosAtivos}
+              carrosInativos={carrosInativos}
               onAdd={carrosHook.openAddDialog}
               onEdit={carrosHook.openEditDialog}
               onDelete={carrosHook.remove}
+              qtdCarros={carros.length}
             />
           </TabsContent>
 
           <TabsContent value="viagens" className="mt-0">
             <ViagensTab
               viagens={viagens}
-              carrosAtivosCount={carrosAtivos}
+              carrosAtivosCount={carrosAtivos.length}
               getCarroById={getCarroById}
               onAddViagem={viagensHook.openAddDialog}
               onEditViagem={viagensHook.openEditDialog}

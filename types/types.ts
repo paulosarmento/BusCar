@@ -1,6 +1,8 @@
 import { Timestamp } from "firebase/firestore";
 
+export type TabKey = "carros" | "viagens" | "agendamentos";
 export type TipoCarro = "van" | "spin" | "doblo" | "carro";
+
 export const CAPACIDADE_POR_TIPO: Record<TipoCarro, number> = {
   van: 15,
   spin: 7,

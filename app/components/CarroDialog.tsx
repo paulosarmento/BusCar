@@ -12,7 +12,14 @@ import { Button } from "../components/Ui/button";
 import { Input } from "../components/Ui/input";
 import { Label } from "../components/Ui/label";
 import { Switch } from "../components/Ui/switch";
-import { CarroFormData } from "@/types/types";
+import { CAPACIDADE_POR_TIPO, CarroFormData, TipoCarro } from "@/types/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./Ui/select";
 
 interface CarroDialogProps {
   open: boolean;
@@ -79,6 +86,48 @@ export function CarroDialog({
                 }
                 required
               />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="tipo">Tipo</Label>
+              <Select
+                value={formData.tipo}
+                onValueChange={(value) => {
+                  const tipo = value as TipoCarro;
+
+                  setFormData({
+                    ...formData,
+                    tipo,
+                    capacidade: CAPACIDADE_POR_TIPO[tipo], // 🔥 sincroniza automaticamente
+                  });
+                }}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="carro">Carro</SelectItem>
+                  <SelectItem value="van">Van</SelectItem>
+                  <SelectItem value="spin">Spin</SelectItem>
+                  <SelectItem value="doblo">Doblo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="capacidade">Capacidade</Label>
+              <input
+                id="capacidade"
+                type="number"
+                value={formData.capacidade}
+                disabled
+                className="h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground cursor-not-allowed"
+              />
+              <p className="text-xs text-muted-foreground">
+                A capacidade é definida automaticamente conforme o tipo do
+                veículo
+              </p>
             </div>
 
             <div className="grid gap-2">
