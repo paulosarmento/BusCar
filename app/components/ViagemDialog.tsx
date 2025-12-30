@@ -11,6 +11,7 @@ import {
 import { Button } from "../components/Ui/button";
 import { Input } from "../components/Ui/input";
 import { Label } from "../components/Ui/label";
+import { Switch } from "../components/Ui/switch";
 import {
   Select,
   SelectContent,
@@ -19,6 +20,7 @@ import {
   SelectValue,
 } from "../components/Ui/select";
 import { Carro, ViagemFormData } from "@/types/types";
+import { useCallback, useMemo } from "react";
 
 interface ViagemDialogProps {
   open: boolean;
@@ -46,29 +48,48 @@ export function ViagemDialog({
   onSubmit,
   onClose,
 }: ViagemDialogProps) {
+  const carrosMap = useMemo(
+    () => new Map(carros.map((c) => [c.id, c])),
+    [carros]
+  );
+  const getCarroById = useCallback(
+    (id: string) => carrosMap.get(id),
+    [carrosMap]
+  );
+
+  const carroSelecionado = getCarroById(formData.carroId);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[520px]">
         <form onSubmit={onSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {editing ? "Editar Viagem" : "Adicionar Nova Viagem"}
+              {editing ? "Editar Viagem" : "Adicionar Viagem"}
             </DialogTitle>
             <DialogDescription>
-              {editing
-                ? "Atualize as informações da viagem."
-                : "Preencha os dados da nova viagem."}
+              A capacidade é definida automaticamente pelo carro selecionado.
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
+            {/* Carro */}
             <div className="grid gap-2">
               <Label>Carro</Label>
               <Select
                 value={formData.carroId}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, carroId: value })
-                }
+                onValueChange={(value) => {
+                  const carro = getCarroById(value);
+
+                  if (!carro) return;
+
+                  setFormData({
+                    ...formData,
+                    carroId: value,
+                    capacidadeMax: carro?.capacidade,
+                  });
+                }}
+                required
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione um carro ativo" />
@@ -78,13 +99,27 @@ export function ViagemDialog({
                     .filter((c) => c.ativo)
                     .map((carro) => (
                       <SelectItem key={carro.id} value={carro.id}>
-                        {carro.modelo} - {carro.placa}
+                        {carro.modelo} — {carro.placa} ({carro.capacidade}{" "}
+                        vagas)
                       </SelectItem>
                     ))}
                 </SelectContent>
               </Select>
             </div>
 
+            {/* Destino */}
+            <div className="grid gap-2">
+              <Label>Destino</Label>
+              <Input
+                value={formData.destino}
+                onChange={(e) =>
+                  setFormData({ ...formData, destino: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            {/* Data */}
             <div className="grid gap-2">
               <Label>Data e Hora</Label>
               <Input
@@ -93,30 +128,41 @@ export function ViagemDialog({
                 onChange={(e) =>
                   setFormData({ ...formData, dataHora: e.target.value })
                 }
+                required
               />
             </div>
 
+            {/* Capacidade (somente leitura) */}
             <div className="grid gap-2">
               <Label>Capacidade Máxima</Label>
               <Input
-                type="number"
-                min={1}
-                value={formData.capacidadeMax}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    capacidadeMax: Number(e.target.value),
-                  })
+                value={
+                  carroSelecionado
+                    ? `${carroSelecionado.capacidade} passageiros`
+                    : "-"
+                }
+                disabled
+              />
+            </div>
+
+            {/* Tour */}
+            <div className="flex items-center justify-between">
+              <Label>É um tour?</Label>
+              <Switch
+                checked={formData.isTour}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, isTour: checked })
                 }
               />
             </div>
 
+            {/* Status */}
             <div className="grid gap-2">
               <Label>Status</Label>
               <Select
                 value={formData.status}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, status: value })
+                  setFormData({ ...formData, status: value as any })
                 }
               >
                 <SelectTrigger>
@@ -136,11 +182,7 @@ export function ViagemDialog({
               Cancelar
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting
-                ? "Salvando..."
-                : editing
-                ? "Salvar Alterações"
-                : "Adicionar Viagem"}
+              {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>
           </DialogFooter>
         </form>

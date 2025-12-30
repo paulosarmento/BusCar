@@ -36,19 +36,20 @@ export interface UseCarrosParams {
 export interface FirebaseData {
   carros: any[];
   viagens: any[];
+  reservas: any[];
 }
 
 export interface Reserva {
   id: string;
   viagemId: string;
   usuarioId: string;
-  aceitaLotacao4: boolean;
+  quantidadeVagas: number;
   status: "confirmada" | "cancelada" | string;
   createdAt?: string;
 }
 
 export interface ReservaFormData {
-  aceitaLotacao4: boolean;
+  quantidadeVagas: number;
 }
 
 export interface UseReservasProps {
@@ -56,22 +57,38 @@ export interface UseReservasProps {
   fetchData: () => Promise<void>;
 }
 
+export type StatusViagem = "aberta" | "fechada" | "cancelada";
+
 export interface Viagem {
   id: string;
-  dataHora: Date | Timestamp | string;
   carroId: string;
+
+  destino: string;
+  isTour: boolean;
+
+  dataHora: Date | Timestamp | string;
+
   capacidadeMax: number;
-  status: "aberta" | "fechada" | "cancelada";
-  createdAt?: Date | Timestamp | string;
+  vagasReservadas: number;
+
+  status: StatusViagem;
+
+  createdAt: Date | Timestamp | string;
 }
 
 export interface ViagemFormData {
   carroId: string;
+  destino: string;
+  isTour: boolean;
+
   dataHora: string;
   capacidadeMax: number;
-  status: string;
+  vagasReservadas: number;
+
+  status: StatusViagem;
 }
 
 export interface UseViagensProps {
   fetchData: () => Promise<void>;
+  onAfterDelete: () => void;
 }

@@ -52,8 +52,7 @@ export function ViagensTab({
               Nenhuma viagem cadastrada
             </CardTitle>
             <CardDescription>
-              Crie viagens disponíveis para que os clientes possam fazer
-              reservas.
+              Crie viagens disponíveis para reservas.
             </CardDescription>
           </CardHeader>
 
@@ -66,14 +65,24 @@ export function ViagensTab({
               <Plus className="w-4 h-4" />
               {carrosAtivosCount === 0
                 ? "Cadastre um carro ativo primeiro"
-                : "Cadastrar Primeira Viagem"}
+                : "Cadastrar Viagem"}
             </Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4">
-          {viagens.map((viagem: Viagem) => {
+          {viagens.map((viagem) => {
             const carro = getCarroById(viagem.carroId);
+
+            // 🔹 backend é a fonte da verdade
+            const vagasReservadas = viagem.vagasReservadas ?? 0;
+            const vagasDisponiveis = Math.max(
+              0,
+              viagem.capacidadeMax - vagasReservadas
+            );
+
+            const disponivel =
+              viagem.status === "aberta" && vagasDisponiveis > 0;
 
             return (
               <Card
@@ -81,7 +90,7 @@ export function ViagensTab({
                 className="overflow-hidden hover:shadow-lg transition-shadow"
               >
                 <div className="flex flex-col md:flex-row">
-                  <div className="md:w-48 h-48 md:h-auto bg-gradient-to-br from-slate-100 to-slate-200 flex-shrink-0">
+                  <div className="md:w-48 h-48 bg-gradient-to-br from-slate-100 to-slate-200 flex-shrink-0">
                     {carro?.foto ? (
                       <img
                         src={carro.foto}
@@ -97,15 +106,22 @@ export function ViagensTab({
 
                   <div className="flex-1">
                     <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1">
+                      <div className="flex justify-between items-start">
+                        <div>
                           <CardTitle className="flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-primary" />
-                            {carro?.modelo || "Carro não encontrado"}
+                            {viagem.destino}
                           </CardTitle>
+
                           <CardDescription className="font-mono">
-                            {carro?.placa}
+                            {carro?.modelo} — {carro?.placa}
                           </CardDescription>
+
+                          {viagem.isTour && (
+                            <Badge variant="secondary" className="mt-1">
+                              Tour
+                            </Badge>
+                          )}
                         </div>
 
                         <Badge
@@ -131,14 +147,12 @@ export function ViagensTab({
                               Data e Hora
                             </p>
                             <p className="font-medium">
-                              {viagem.dataHora
-                                ? new Date(
-                                    viagem.dataHora as string
-                                  ).toLocaleString("pt-BR", {
-                                    dateStyle: "short",
-                                    timeStyle: "short",
-                                  })
-                                : "Data não disponível"}
+                              {new Date(
+                                viagem.dataHora as string
+                              ).toLocaleString("pt-BR", {
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              })}
                             </p>
                           </div>
                         </div>
@@ -147,17 +161,17 @@ export function ViagensTab({
                           <Users className="w-4 h-4 text-muted-foreground" />
                           <div>
                             <p className="text-sm text-muted-foreground">
-                              Capacidade
+                              Vagas disponíveis
                             </p>
                             <p className="font-medium">
-                              {viagem.capacidadeMax} passageiros
+                              {vagasDisponiveis} / {viagem.capacidadeMax}
                             </p>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex gap-2">
-                        {viagem.status === "aberta" && (
+                        {disponivel && (
                           <Button
                             size="sm"
                             className="flex-1 gap-2"
@@ -171,20 +185,20 @@ export function ViagensTab({
                         <Button
                           size="sm"
                           variant="outline"
-                          className="flex-1 gap-2 bg-transparent"
+                          className="flex-1"
                           onClick={() => onEditViagem(viagem)}
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-4 h-4 mr-2" />
                           Editar
                         </Button>
 
                         <Button
                           size="sm"
                           variant="outline"
-                          className="flex-1 gap-2 text-destructive bg-transparent"
+                          className="flex-1 text-destructive"
                           onClick={() => onDeleteViagem(viagem.id)}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4 mr-2" />
                           Excluir
                         </Button>
                       </div>

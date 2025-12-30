@@ -1,18 +1,27 @@
 "use client";
 
 import { UseViagensProps, Viagem, ViagemFormData } from "@/types/types";
-import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
 
-export function useViagens({ fetchData }: UseViagensProps) {
+interface UseViagensExtendedProps extends UseViagensProps {
+  onViagemRemovida?: (viagemId: string) => void;
+}
+
+export function useViagens({
+  fetchData,
+  onViagemRemovida,
+}: UseViagensExtendedProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingViagem, setEditingViagem] = useState<Viagem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState<ViagemFormData>({
     carroId: "",
+    destino: "",
+    isTour: false,
     dataHora: "",
-    capacidadeMax: 4,
+    capacidadeMax: 0,
+    vagasReservadas: 0,
     status: "aberta",
   });
 
@@ -20,43 +29,29 @@ export function useViagens({ fetchData }: UseViagensProps) {
     setEditingViagem(null);
     setFormData({
       carroId: "",
+      destino: "",
+      isTour: false,
       dataHora: "",
-      capacidadeMax: 4,
+      capacidadeMax: 0,
+      vagasReservadas: 0,
       status: "aberta",
     });
     setIsDialogOpen(true);
   }
 
   function openEditDialog(viagem: Viagem) {
+    const date = new Date(viagem.dataHora as string);
     setEditingViagem(viagem);
-
-    let dataHoraFormatted = "";
-    if (viagem.dataHora) {
-      const date = new Date(viagem.dataHora as string);
-      if (!isNaN(date.getTime())) {
-        dataHoraFormatted = date.toISOString().slice(0, 16);
-      }
-    }
-
     setFormData({
-      carroId: viagem.carroId,
-      dataHora: dataHoraFormatted,
-      capacidadeMax: viagem.capacidadeMax,
-      status: viagem.status,
+      ...viagem,
+      dataHora: !isNaN(date.getTime()) ? date.toISOString().slice(0, 16) : "",
     });
-
     setIsDialogOpen(true);
   }
 
   function closeDialog() {
     setIsDialogOpen(false);
     setEditingViagem(null);
-    setFormData({
-      carroId: "",
-      dataHora: "",
-      capacidadeMax: 4,
-      status: "aberta",
-    });
   }
 
   async function submit(e: React.FormEvent) {
@@ -64,35 +59,20 @@ export function useViagens({ fetchData }: UseViagensProps) {
     setIsSubmitting(true);
 
     try {
-      if (editingViagem) {
-        const res = await fetch(`/api/viagens/${editingViagem.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+      const url = editingViagem
+        ? `/api/viagens/${editingViagem.id}`
+        : "/api/viagens";
 
-        if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error.error || "Erro ao editar viagem");
-        }
-      } else {
-        const res = await fetch("/api/viagens", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+      const method = editingViagem ? "PUT" : "POST";
 
-        if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error.error || "Erro ao criar viagem");
-        }
-      }
+      await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
       await fetchData();
       closeDialog();
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -101,32 +81,26 @@ export function useViagens({ fetchData }: UseViagensProps) {
   async function remove(id: string) {
     if (!confirm("Tem certeza que deseja excluir esta viagem?")) return;
 
-    try {
-      const res = await fetch(`/api/viagens/${id}`, {
-        method: "DELETE",
-      });
+    await fetch(`/api/viagens/${id}`, { method: "DELETE" });
 
-      if (!res.ok) {
-        throw new Error("Erro ao excluir viagem");
-      }
+    // 🔥 ATUALIZA RESERVAS LOCALMENTE
+    onViagemRemovida?.(id);
 
-      await fetchData();
-    } catch (error) {
-      console.error(error);
-      alert("Erro ao excluir viagem");
-    }
+    await fetch(`/api/viagens/${id}/reservas`, { method: "DELETE" });
+
+    // 🔥 ATUALIZA RESERVAS LOCALMENTE
+    onViagemRemovida?.(id);
+
+    await fetchData();
   }
 
   return {
-    // estado
     isDialogOpen,
     setIsDialogOpen,
-    isSubmitting,
     editingViagem,
+    isSubmitting,
     formData,
     setFormData,
-
-    // ações
     openAddDialog,
     openEditDialog,
     closeDialog,

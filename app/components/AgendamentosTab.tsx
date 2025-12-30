@@ -12,13 +12,12 @@ import { Button } from "../components/Ui/button";
 import { Badge } from "../components/Ui/badge";
 import { Calendar, Car } from "lucide-react";
 import { Carro, Reserva, Viagem } from "@/types/types";
+import { useMemo } from "react";
 
 interface AgendamentosTabProps {
   reservas: Reserva[];
-
   getViagemById: (id: string) => Viagem | undefined;
   getCarroById: (id: string) => Carro | undefined;
-
   onCancelReserva: (id: string) => void;
 }
 
@@ -60,12 +59,17 @@ export function AgendamentosTab({
             const viagem = getViagemById(reserva.viagemId);
             const carro = viagem ? getCarroById(viagem.carroId) : undefined;
 
+            const viagemExiste = Boolean(viagem);
+            const podeCancelar =
+              viagemExiste && reserva.status === "confirmada";
+
             return (
               <Card
                 key={reserva.id}
                 className="overflow-hidden hover:shadow-lg transition-shadow"
               >
                 <div className="flex flex-col md:flex-row">
+                  {/* IMAGEM / PLACEHOLDER */}
                   <div className="md:w-48 h-48 md:h-auto bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
                     {carro?.foto ? (
                       <img
@@ -84,20 +88,26 @@ export function AgendamentosTab({
                         <div>
                           <CardTitle className="flex items-center gap-2">
                             <Calendar className="w-5 h-5 text-primary" />
-                            {carro?.modelo || "Carro não encontrado"}
+                            {viagemExiste ? viagem!.destino : "Viagem removida"}
                           </CardTitle>
+
                           <CardDescription className="font-mono">
-                            {carro?.placa}
+                            {carro
+                              ? `${carro.modelo} — ${carro.placa}`
+                              : "Carro não disponível"}
                           </CardDescription>
                         </div>
 
+                        {/* STATUS É A FONTE DA VERDADE */}
                         <Badge
                           variant={
-                            reserva.status === "confirmada"
+                            viagemExiste
                               ? "default"
-                              : reserva.status === "cancelada"
+                              : !viagemExiste
                               ? "destructive"
-                              : "secondary"
+                              : reserva.status === "cancelada"
+                              ? "default"
+                              : "destructive"
                           }
                         >
                           {reserva.status}
@@ -107,6 +117,7 @@ export function AgendamentosTab({
 
                     <CardContent>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                        {/* DATA */}
                         <div>
                           <p className="text-sm text-muted-foreground">
                             Data e Hora
@@ -119,30 +130,34 @@ export function AgendamentosTab({
                                   dateStyle: "short",
                                   timeStyle: "short",
                                 })
-                              : "N/A"}
+                              : "—"}
                           </p>
                         </div>
 
+                        {/* CAPACIDADE */}
                         <div>
                           <p className="text-sm text-muted-foreground">
                             Capacidade
                           </p>
                           <p className="font-medium text-sm">
-                            {viagem?.capacidadeMax || 0} passageiros
+                            {viagem?.capacidadeMax ?? "—"}
                           </p>
                         </div>
 
+                        {/* VAGAS */}
                         <div>
                           <p className="text-sm text-muted-foreground">
-                            Lotação 4
+                            Vagas reservadas
                           </p>
                           <p className="font-medium text-sm">
-                            {reserva.aceitaLotacao4 ? "Aceita" : "Não aceita"}
+                            {reserva.quantidadeVagas ?? 1}
                           </p>
                         </div>
                       </div>
 
-                      {reserva.status === "confirmada" && (
+                      {/* BOTÃO SÓ EXISTE SE CONFIRMADA */}
+
+                      {podeCancelar && (
                         <Button
                           variant="outline"
                           size="sm"

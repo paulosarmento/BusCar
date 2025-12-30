@@ -9,9 +9,10 @@ import {
   DialogFooter,
 } from "../components/Ui/dialog";
 import { Button } from "../components/Ui/button";
-import { Checkbox } from "../components/Ui/checkbox";
+import { Input } from "../components/Ui/input";
 import { Label } from "../components/Ui/label";
 import { Carro, ReservaFormData, Viagem } from "@/types/types";
+import { useMemo } from "react";
 
 interface ReservaDialogProps {
   open: boolean;
@@ -39,56 +40,73 @@ export function ReservaDialog({
   onSubmit,
   onClose,
 }: ReservaDialogProps) {
+  const carro = getCarroById(viagem?.carroId || "");
+
+  const vagasDisponiveis = useMemo(() => {
+    if (!viagem) return 0;
+    return viagem.capacidadeMax - viagem.vagasReservadas;
+  }, [viagem]);
+
+  if (!viagem) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={onSubmit}>
           <DialogHeader>
-            <DialogTitle>Reservar Vaga</DialogTitle>
+            <DialogTitle>Reservar Vagas</DialogTitle>
             <DialogDescription>
-              Confirme sua reserva para esta viagem
+              Escolha quantas vagas deseja reservar nesta viagem
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <div className="rounded-lg bg-muted p-4 space-y-2">
+            {/* Resumo */}
+            <div className="rounded-lg bg-muted p-4 space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Carro:</span>
-                <span>{getCarroById(viagem?.carroId || "")?.modelo}</span>
+                <span>Destino:</span>
+                <span>{viagem.destino}</span>
               </div>
               <div className="flex justify-between">
-                <span>Data e Hora:</span>
+                <span>Carro:</span>
+                <span>{carro?.modelo}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Data:</span>
                 <span>
-                  {viagem?.dataHora
-                    ? new Date(viagem.dataHora as string).toLocaleString(
-                        "pt-BR",
-                        {
-                          dateStyle: "short",
-                          timeStyle: "short",
-                        }
-                      )
-                    : ""}
+                  {new Date(viagem.dataHora as string).toLocaleString("pt-BR", {
+                    dateStyle: "short",
+                    timeStyle: "short",
+                  })}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Capacidade:</span>
-                <span>{viagem?.capacidadeMax} passageiros</span>
+                <span>Vagas disponíveis:</span>
+                <span>{vagasDisponiveis}</span>
               </div>
             </div>
 
-            <div className="flex items-start space-x-3 rounded-md border p-4">
-              <Checkbox
-                checked={formData.aceitaLotacao4}
-                onCheckedChange={(checked) =>
-                  setFormData({ aceitaLotacao4: checked as boolean })
+            {/* Quantidade */}
+            <div className="grid gap-2">
+              <Label>Quantidade de vagas</Label>
+              <Input
+                type="number"
+                min={1}
+                max={vagasDisponiveis}
+                value={formData.quantidadeVagas}
+                onChange={(e) =>
+                  setFormData({
+                    quantidadeVagas: Math.min(
+                      Math.max(1, Number(e.target.value)),
+                      vagasDisponiveis
+                    ),
+                  })
                 }
+                required
               />
-              <div>
-                <Label>Aceito lotação de 4 passageiros</Label>
-                <p className="text-sm text-muted-foreground">
-                  Confirmo que aceito viajar com até 4 passageiros
-                </p>
-              </div>
+              <p className="text-xs text-muted-foreground">
+                Máximo permitido: {vagasDisponiveis}
+              </p>
             </div>
           </div>
 
@@ -98,7 +116,7 @@ export function ReservaDialog({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || !formData.aceitaLotacao4}
+              disabled={isSubmitting || vagasDisponiveis === 0}
             >
               {isSubmitting ? "Reservando..." : "Confirmar Reserva"}
             </Button>

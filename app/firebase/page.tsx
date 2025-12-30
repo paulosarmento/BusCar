@@ -26,7 +26,7 @@ import { useCarros } from "../../hooks/useCarros";
 import { useViagens } from "../../hooks/useViagens";
 import { useReservas } from "../../hooks/useReservas";
 import { useFirebaseData } from "../../hooks/useFirebaseData";
-import { TabKey } from "@/types/types";
+import { Reserva, TabKey } from "@/types/types";
 
 export default function Home() {
   const user = useAuthGuard();
@@ -38,8 +38,10 @@ export default function Home() {
     carrosAtivos,
     viagensAbertas,
     carrosInativos,
+    reservasConfirmadas,
     carros,
     viagens,
+    reservas,
   } = useFirebaseData();
 
   const [activeTab, setActiveTab] = useState<TabKey>("carros");
@@ -65,10 +67,14 @@ export default function Home() {
   );
 
   const carrosHook = useCarros({ fetchData });
-  const viagensHook = useViagens({ fetchData });
+
   const reservasHook = useReservas({
     userId: user?.uid,
     fetchData,
+  });
+  const viagensHook = useViagens({
+    fetchData,
+    onAfterDelete: reservasHook.fetchReservas,
   });
 
   useEffect(() => {
@@ -76,7 +82,7 @@ export default function Home() {
     reservasHook.fetchReservas();
   }, []);
 
-  const reservasConfirmadas = reservasHook.reservasConfirmadas;
+  // const reservasConfirmadas = reservasHook.reservasConfirmadas;
   // const reservasCanceladas = reservasHook.reservasCanceladas;
 
   if (!user || loading) {

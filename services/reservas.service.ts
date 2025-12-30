@@ -13,7 +13,12 @@ import {
   where,
   onSnapshot,
   orderBy,
+  runTransaction,
 } from "firebase/firestore";
+
+/* =========================
+ * LISTAGENS
+ * ========================= */
 
 export async function listarReservas() {
   const db = getFirestoreInstance();
@@ -50,68 +55,90 @@ export async function listarReservasPorUsuario(usuarioId: string) {
   })) as Reserva[];
 }
 
+/* =========================
+ * CRIAÇÃO
+ * ========================= */
+
 export async function adicionarReserva(
-  reserva: Omit<Reserva, "id" | "createdAt" | "status">
+  reserva: Omit<Reserva, "id" | "createdAt" | "status"> & {
+    quantidadeVagas: number;
+  }
 ) {
   const db = getFirestoreInstance();
 
-  // Validar que a viagem existe
+  if (reserva.quantidadeVagas < 1) {
+    throw new Error("Quantidade de vagas inválida");
+  }
+
   const viagemRef = doc(db, "viagens", reserva.viagemId);
-  const viagemDoc = await getDoc(viagemRef);
 
-  if (!viagemDoc.exists()) {
-    throw new Error("Viagem não encontrada");
-  }
+  return await runTransaction(db, async (transaction) => {
+    const viagemSnap = await transaction.get(viagemRef);
 
-  const viagemData = viagemDoc.data();
+    if (!viagemSnap.exists()) {
+      throw new Error("Viagem não encontrada");
+    }
 
-  // Verificar se a viagem está aberta
-  if (viagemData.status !== "aberta") {
-    throw new Error("Esta viagem não está disponível para reservas");
-  }
+    const viagemData = viagemSnap.data();
 
-  // Verificar capacidade disponível
-  const reservasExistentes = await listarReservasPorViagem(reserva.viagemId);
-  const reservasConfirmadas = reservasExistentes.filter(
-    (r) => r.status === "confirmada"
-  );
+    if (viagemData.status !== "aberta") {
+      throw new Error("Esta viagem não está disponível para reservas");
+    }
 
-  if (reservasConfirmadas.length >= viagemData.capacidadeMax) {
-    throw new Error("Esta viagem já atingiu a capacidade máxima");
-  }
+    const vagasReservadasAtual = viagemData.vagasReservadas ?? 0;
+    const capacidadeMax = viagemData.capacidadeMax;
 
-  // Verificar se o usuário já tem reserva para esta viagem
-  const reservaExistente = reservasConfirmadas.find(
-    (r) => r.usuarioId === reserva.usuarioId
-  );
+    const vagasDisponiveis = capacidadeMax - vagasReservadasAtual;
 
-  if (reservaExistente) {
-    throw new Error("Você já possui uma reserva confirmada para esta viagem");
-  }
+    if (reserva.quantidadeVagas > vagasDisponiveis) {
+      throw new Error(`Vagas insuficientes. Disponíveis: ${vagasDisponiveis}`);
+    }
 
-  // Validar campo obrigatório aceitaLotacao4
-  if (typeof reserva.aceitaLotacao4 !== "boolean") {
-    throw new Error("Campo aceitaLotacao4 é obrigatório");
-  }
+    // 🔹 Verificar se o usuário já tem reserva confirmada
+    const reservasRef = collection(db, "reservas");
+    const q = query(
+      reservasRef,
+      where("viagemId", "==", reserva.viagemId),
+      where("usuarioId", "==", reserva.usuarioId),
+      where("status", "==", "confirmada")
+    );
 
-  // Adicionar reserva com status inicial "confirmada"
-  const reservaData = {
-    ...reserva,
-    status: "confirmada" as const,
-    createdAt: Timestamp.now(),
-  };
+    const reservasSnap = await getDocs(q);
 
-  const reservasRef = collection(db, "reservas");
-  const docRef = await addDoc(reservasRef, reservaData);
+    if (!reservasSnap.empty) {
+      throw new Error("Você já possui uma reserva para esta viagem");
+    }
 
-  return { id: docRef.id, ...reservaData };
+    // 🔹 Criar reserva
+    const reservaRef = doc(reservasRef);
+    const reservaData = {
+      ...reserva,
+      status: "confirmada" as const,
+      createdAt: Timestamp.now(),
+    };
+
+    transaction.set(reservaRef, reservaData);
+
+    // 🔹 Atualizar vagas reservadas da viagem
+    transaction.update(viagemRef, {
+      vagasReservadas: vagasReservadasAtual + reserva.quantidadeVagas,
+    });
+
+    return {
+      id: reservaRef.id,
+      ...reservaData,
+    };
+  });
 }
+
+/* =========================
+ * EDIÇÃO / EXCLUSÃO
+ * ========================= */
 
 export async function editarReserva(id: string, reserva: Partial<Reserva>) {
   const db = getFirestoreInstance();
   const reservaRef = doc(db, "reservas", id);
 
-  // Verificar se a reserva existe
   const reservaDoc = await getDoc(reservaRef);
   if (!reservaDoc.exists()) {
     throw new Error("Reserva não encontrada");
@@ -140,39 +167,72 @@ export async function buscarReserva(id: string) {
   return { id: reservaDoc.id, ...reservaDoc.data() } as Reserva;
 }
 
+/* =========================
+ * CANCELAMENTO
+ * ========================= */
+
 export async function cancelarReserva(id: string) {
   const db = getFirestoreInstance();
   const reservaRef = doc(db, "reservas", id);
 
-  console.log("[v0] Buscando reserva para cancelar:", id);
+  return await runTransaction(db, async (transaction) => {
+    const reservaSnap = await transaction.get(reservaRef);
 
-  // Verificar se a reserva existe
-  const reservaDoc = await getDoc(reservaRef);
-  if (!reservaDoc.exists()) {
-    console.error("[v0] Reserva não encontrada:", id);
-    throw new Error("Reserva não encontrada");
-  }
+    if (!reservaSnap.exists()) {
+      throw new Error("Reserva não encontrada");
+    }
 
-  const reservaData = reservaDoc.data();
-  console.log("[v0] Status atual da reserva:", reservaData.status);
+    const reservaData = reservaSnap.data();
 
-  // Verificar se a reserva pode ser cancelada
-  if (reservaData.status === "cancelada") {
-    throw new Error("Esta reserva já foi cancelada");
-  }
+    if (reservaData.status === "cancelada") {
+      throw new Error("Esta reserva já foi cancelada");
+    }
 
-  if (reservaData.status === "concluida") {
-    throw new Error("Não é possível cancelar uma reserva já concluída");
-  }
+    if (reservaData.status === "concluida") {
+      throw new Error("Não é possível cancelar uma reserva concluída");
+    }
 
-  await updateDoc(reservaRef, { status: "cancelada" });
+    const viagemRef = doc(db, "viagens", reservaData.viagemId);
+    const viagemSnap = await transaction.get(viagemRef);
 
-  console.log("[v0] Reserva cancelada com sucesso:", id);
+    if (!viagemSnap.exists()) {
+      throw new Error("Viagem não encontrada");
+    }
 
-  return { id, status: "cancelada", ...reservaData };
+    const viagemData = viagemSnap.data();
+
+    const vagasReservadasAtual = viagemData.vagasReservadas ?? 0;
+    const quantidadeVagas = reservaData.quantidadeVagas ?? 1;
+
+    // 🔹 Garantia extra: nunca deixar negativo
+    const novasVagasReservadas = Math.max(
+      0,
+      vagasReservadasAtual - quantidadeVagas
+    );
+
+    // 🔹 Atualizar reserva
+    transaction.update(reservaRef, {
+      status: "cancelada",
+    });
+
+    // 🔹 Devolver vagas para a viagem
+    transaction.update(viagemRef, {
+      vagasReservadas: novasVagasReservadas,
+    });
+
+    return {
+      id,
+      status: "cancelada",
+      ...reservaData,
+    };
+  });
 }
 
-export function observarReservas(callback: (reservas: any[]) => void) {
+/* =========================
+ * REALTIME
+ * ========================= */
+
+export function observarReservas(callback: (reservas: Reserva[]) => void) {
   const db = getFirestoreInstance();
   const reservasRef = collection(db, "reservas");
   const q = query(reservasRef, orderBy("createdAt", "desc"));
@@ -181,7 +241,7 @@ export function observarReservas(callback: (reservas: any[]) => void) {
     const reservas = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    })) as Reserva[];
 
     callback(reservas);
   });

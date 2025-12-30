@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type React from "react";
 import {
   Reserva,
@@ -18,18 +18,27 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
   );
 
   const [formData, setFormData] = useState<ReservaFormData>({
-    aceitaLotacao4: false,
+    quantidadeVagas: 1,
   });
 
-  const reservasDoUsuario = reservas.filter((r) => r.usuarioId === userId);
+  /* ===================== DERIVAÇÕES ===================== */
 
-  const reservasConfirmadas = reservasDoUsuario.filter(
-    (r) => r.status === "confirmada"
-  ).length;
+  const reservasDoUsuario = useMemo(
+    () => reservas.filter((r) => r.usuarioId === userId),
+    [reservas, userId]
+  );
 
-  const reservasCanceladas = reservasDoUsuario.filter(
-    (r) => r.status === "cancelada"
-  ).length;
+  const reservasConfirmadas = useMemo(
+    () => reservas.filter((r) => r.status === "confirmada"),
+    [reservas]
+  );
+
+  const reservasCanceladas = useMemo(
+    () => reservas.filter((r) => r.status === "cancelada"),
+    [reservas]
+  );
+
+  /* ===================== FETCH ===================== */
 
   async function fetchReservas() {
     try {
@@ -42,17 +51,33 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     }
   }
 
+  /* ===================== SYNC LOCAL ===================== */
+
+  function syncReservasPorViagem(viagemId: string, novoStatus: "cancelada") {
+    setReservas((prev) =>
+      prev.map((reserva) =>
+        reserva.viagemId === viagemId
+          ? { ...reserva, status: novoStatus }
+          : reserva
+      )
+    );
+  }
+
+  /* ===================== UI ===================== */
+
   function openDialog(viagem: Viagem) {
     setViagemSelecionada(viagem);
-    setFormData({ aceitaLotacao4: false });
+    setFormData({ quantidadeVagas: 1 });
     setIsDialogOpen(true);
   }
 
   function closeDialog() {
     setIsDialogOpen(false);
     setViagemSelecionada(null);
-    setFormData({ aceitaLotacao4: false });
+    setFormData({ quantidadeVagas: 1 });
   }
+
+  /* ===================== ACTIONS ===================== */
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,22 +92,15 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
         body: JSON.stringify({
           viagemId: viagemSelecionada.id,
           usuarioId: userId,
-          aceitaLotacao4: formData.aceitaLotacao4,
+          quantidadeVagas: formData.quantidadeVagas,
         }),
       });
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Erro ao criar reserva");
-      }
+      if (!res.ok) throw new Error("Erro ao criar reserva");
 
-      await fetchData();
       await fetchReservas();
+      await fetchData();
       closeDialog();
-      alert("Reserva criada com sucesso!");
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -91,26 +109,12 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
   async function cancelar(id: string) {
     if (!confirm("Tem certeza que deseja cancelar esta reserva?")) return;
 
-    try {
-      const res = await fetch(`/api/reservas/${id}/cancelar`, {
-        method: "POST",
-      });
-
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Erro ao cancelar reserva");
-      }
-
-      await fetchReservas();
-      alert("Reserva cancelada com sucesso!");
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message);
-    }
+    await fetch(`/api/reservas/${id}/cancelar`, { method: "POST" });
+    await fetchReservas();
+    await fetchData();
   }
 
   return {
-    // estado
     reservas,
     reservasDoUsuario,
     reservasConfirmadas,
@@ -119,13 +123,10 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     formData,
     isDialogOpen,
     isSubmitting,
-
-    // setters
     setFormData,
     setIsDialogOpen,
-
-    // ações
     fetchReservas,
+    syncReservasPorViagem, // 🔥 IMPORTANTE
     openDialog,
     closeDialog,
     submit,
