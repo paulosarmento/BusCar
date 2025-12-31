@@ -1,3 +1,4 @@
+import { useReservas } from "@/hooks/useReservas";
 import { getFirestoreInstance } from "@/lib/firebase";
 import { Carro, Reserva, Viagem } from "@/types/types";
 import {
@@ -15,10 +16,6 @@ import {
   onSnapshot,
   runTransaction,
 } from "firebase/firestore";
-
-/* =========================
- * LISTAGEM
- * ========================= */
 
 export async function listarViagens() {
   const db = getFirestoreInstance();
@@ -41,10 +38,6 @@ export async function listarViagens() {
     };
   }) as Viagem[];
 }
-
-/* =========================
- * CRIAÇÃO
- * ========================= */
 
 export async function adicionarViagem(
   viagem: Omit<Viagem, "id" | "createdAt">
@@ -109,10 +102,6 @@ export async function adicionarViagem(
   };
 }
 
-/* =========================
- * EDIÇÃO
- * ========================= */
-
 export async function editarViagem(id: string, viagem: Partial<Viagem>) {
   const db = getFirestoreInstance();
   const viagemRef = doc(db, "viagens", id);
@@ -132,10 +121,6 @@ export async function editarViagem(id: string, viagem: Partial<Viagem>) {
   return { id, ...data };
 }
 
-/* =========================
- * EXCLUSÃO DA VIAGEM (REFLETE NAS RESERVAS SEM REFRESH)
- * ========================= */
-
 export async function excluirViagem(id: string) {
   const db = getFirestoreInstance();
   const viagemRef = doc(db, "viagens", id);
@@ -148,30 +133,28 @@ export async function excluirViagem(id: string) {
       throw new Error("Viagem não encontrada");
     }
 
-    // 🔹 Buscar reservas da viagem
-    const q = query(reservasRef, where("viagemId", "==", id));
-    const reservasSnap = await getDocs(q);
+    const reservasQuery = query(
+      reservasRef,
+      where("viagemId", "==", id),
+      where("status", "==", "confirmada")
+    );
 
-    reservasSnap.docs.forEach((reservaDoc) => {
-      const reserva = reservaDoc.data() as Reserva;
+    const reservasSnap = await getDocs(reservasQuery);
 
-      if (reserva.status === "confirmada") {
-        transaction.update(reservaDoc.ref, {
-          status: "cancelada",
-        });
-      }
+    reservasSnap.forEach((reservaDoc) => {
+      transaction.update(reservaDoc.ref, {
+        status: "cancelada",
+      });
     });
 
-    // 🔹 Agora sim pode excluir a viagem
     transaction.delete(viagemRef);
 
-    return { id };
+    return {
+      viagemId: id,
+      reservasCanceladas: reservasSnap.size,
+    };
   });
 }
-
-/* =========================
- * BUSCA
- * ========================= */
 
 export async function buscarViagem(id: string) {
   const db = getFirestoreInstance();
@@ -195,42 +178,4 @@ export async function buscarViagem(id: string) {
         ? data.createdAt.toDate().toISOString()
         : data.createdAt,
   } as Viagem;
-}
-
-/* =========================
- * REALTIME
- * ========================= */
-
-export function observarViagensDisponiveis(
-  callback: (viagens: Viagem[]) => void
-) {
-  const db = getFirestoreInstance();
-  const viagensRef = collection(db, "viagens");
-
-  const q = query(
-    viagensRef,
-    where("status", "==", "aberta"),
-    where("dataHora", ">=", Timestamp.now()),
-    orderBy("dataHora", "asc")
-  );
-
-  return onSnapshot(q, (snapshot) => {
-    const viagens = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        dataHora:
-          data.dataHora instanceof Timestamp
-            ? data.dataHora.toDate().toISOString()
-            : data.dataHora,
-        createdAt:
-          data.createdAt instanceof Timestamp
-            ? data.createdAt.toDate().toISOString()
-            : data.createdAt,
-      };
-    }) as Viagem[];
-
-    callback(viagens);
-  });
 }

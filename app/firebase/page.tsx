@@ -74,7 +74,7 @@ export default function Home() {
   });
   const viagensHook = useViagens({
     fetchData,
-    onAfterDelete: reservasHook.fetchReservas,
+    onViagemRemovida: reservasHook.fetchReservas,
   });
 
   useEffect(() => {
@@ -115,32 +115,34 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       <HeaderAdm user={user} setActiveTab={setActiveTab} logout={logout} />
 
-      <div className="container mx-auto px-4 lg:px-8 py-8">
-        <div className="grid gap-4 md:grid-cols-4 mb-8">
-          <StatsCard
-            title="Total de Carros"
-            value={carros.length}
-            icon={<BarChart3 className="w-4 h-4" />}
-            borderColor="border-l-4 border-l-yellow-500"
-          />
-          <StatsCard
-            title="Carros Ativos"
-            value={carrosAtivos.length}
-            icon={<BarChart3 className="w-4 h-4" />}
-            borderColor="border-l-4 border-l-blue-500"
-          />
-          <StatsCard
-            title="Reservas Ativas"
-            value={reservasConfirmadas}
-            icon={<BarChart3 className="w-4 h-4" />}
-            borderColor="border-l-4 border-l-green-500"
-          />
-          <StatsCard
-            title="Viagens Abertas"
-            value={viagensAbertas}
-            icon={<BarChart3 className="w-4 h-4" />}
-            borderColor="border-l-4 border-l-red-500"
-          />
+      <div className="container mx-auto px-4 lg:px-8 py-8   ">
+        <div className="hidden sm:block">
+          <div className="grid gap-4 md:grid-cols-4 mb-8 ">
+            <StatsCard
+              title="Total de Carros"
+              value={carros.length}
+              icon={<BarChart3 className="w-4 h-4" />}
+              borderColor="border-l-4 border-l-yellow-500"
+            />
+            <StatsCard
+              title="Carros Ativos"
+              value={carrosAtivos.length}
+              icon={<BarChart3 className="w-4 h-4" />}
+              borderColor="border-l-4 border-l-blue-500"
+            />
+            <StatsCard
+              title="Reservas Ativas"
+              value={reservasConfirmadas}
+              icon={<BarChart3 className="w-4 h-4" />}
+              borderColor="border-l-4 border-l-green-500"
+            />
+            <StatsCard
+              title="Viagens Abertas"
+              value={viagensAbertas}
+              icon={<BarChart3 className="w-4 h-4" />}
+              borderColor="border-l-4 border-l-red-500"
+            />
+          </div>
         </div>
 
         <Tabs
@@ -148,32 +150,38 @@ export default function Home() {
           onValueChange={(value) => setActiveTab(value as TabKey)}
           className="w-full"
         >
-          <div className="flex items-center justify-between mb-6">
-            <TabsList>
-              <TabsTrigger value="carros" className="gap-2">
-                <Car className="w-4 h-4" />
-                Carros
-              </TabsTrigger>
-              <TabsTrigger value="viagens" className="gap-2">
-                <MapPin className="w-4 h-4" />
-                Viagens
-              </TabsTrigger>
-              <TabsTrigger value="agendamentos" className="gap-2">
-                <Calendar className="w-4 h-4" />
-                Agendamentos
-              </TabsTrigger>
-            </TabsList>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            {/* Tabs */}
+            <div className="flex items-center">
+              <TabsList>
+                <TabsTrigger value="carros" className="gap-2">
+                  <Car className="w-4 h-4" />
+                  Carros
+                </TabsTrigger>
+                <TabsTrigger value="viagens" className="gap-2">
+                  <MapPin className="w-4 h-4" />
+                  Viagens
+                </TabsTrigger>
+                <TabsTrigger value="agendamentos" className="gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Agendamentos
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
+            {/* Botão */}
             {activeTab === "carros" && (
-              <Button className="gap-2" onClick={carrosHook.openAddDialog}>
+              <Button
+                className="gap-2 w-full sm:w-auto"
+                onClick={carrosHook.openAddDialog}
+              >
                 <Plus className="w-4 h-4" />
                 Adicionar Carro
               </Button>
             )}
-
             {activeTab === "viagens" && (
               <Button
-                className="gap-2"
+                className="gap-2 w-full sm:w-auto"
                 onClick={viagensHook.openAddDialog}
                 disabled={!hasCarrosAtivos}
               >

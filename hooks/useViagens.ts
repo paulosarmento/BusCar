@@ -5,11 +5,13 @@ import { useState } from "react";
 
 interface UseViagensExtendedProps extends UseViagensProps {
   onViagemRemovida?: (viagemId: string) => void;
+  onAfterDelete?: (viagemId: string) => void;
 }
 
 export function useViagens({
   fetchData,
   onViagemRemovida,
+  onAfterDelete,
 }: UseViagensExtendedProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingViagem, setEditingViagem] = useState<Viagem | null>(null);
@@ -86,10 +88,7 @@ export function useViagens({
     // 🔥 ATUALIZA RESERVAS LOCALMENTE
     onViagemRemovida?.(id);
 
-    await fetch(`/api/viagens/${id}/reservas`, { method: "DELETE" });
-
-    // 🔥 ATUALIZA RESERVAS LOCALMENTE
-    onViagemRemovida?.(id);
+    // onAfterDelete?.(id);
 
     await fetchData();
   }

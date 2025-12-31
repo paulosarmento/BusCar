@@ -51,18 +51,6 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     }
   }
 
-  /* ===================== SYNC LOCAL ===================== */
-
-  function syncReservasPorViagem(viagemId: string, novoStatus: "cancelada") {
-    setReservas((prev) =>
-      prev.map((reserva) =>
-        reserva.viagemId === viagemId
-          ? { ...reserva, status: novoStatus }
-          : reserva
-      )
-    );
-  }
-
   /* ===================== UI ===================== */
 
   function openDialog(viagem: Viagem) {
@@ -126,7 +114,6 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     setFormData,
     setIsDialogOpen,
     fetchReservas,
-    syncReservasPorViagem, // 🔥 IMPORTANTE
     openDialog,
     closeDialog,
     submit,

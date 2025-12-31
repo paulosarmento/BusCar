@@ -82,7 +82,7 @@ export function AgendamentosTab({
                     )}
                   </div>
 
-                  <div className="flex-1">
+                  <div className="flex-1  mt-10 md:mt-0">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div>
@@ -98,16 +98,13 @@ export function AgendamentosTab({
                           </CardDescription>
                         </div>
 
-                        {/* STATUS É A FONTE DA VERDADE */}
                         <Badge
                           variant={
-                            viagemExiste
+                            reserva.status === "confirmada"
                               ? "default"
-                              : !viagemExiste
-                              ? "destructive"
                               : reserva.status === "cancelada"
-                              ? "default"
-                              : "destructive"
+                              ? "destructive"
+                              : "secondary"
                           }
                         >
                           {reserva.status}
@@ -116,8 +113,7 @@ export function AgendamentosTab({
                     </CardHeader>
 
                     <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                        {/* DATA */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 ">
                         <div>
                           <p className="text-sm text-muted-foreground">
                             Data e Hora
@@ -134,7 +130,6 @@ export function AgendamentosTab({
                           </p>
                         </div>
 
-                        {/* CAPACIDADE */}
                         <div>
                           <p className="text-sm text-muted-foreground">
                             Capacidade
@@ -144,7 +139,6 @@ export function AgendamentosTab({
                           </p>
                         </div>
 
-                        {/* VAGAS */}
                         <div>
                           <p className="text-sm text-muted-foreground">
                             Vagas reservadas

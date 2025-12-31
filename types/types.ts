@@ -90,5 +90,4 @@ export interface ViagemFormData {
 
 export interface UseViagensProps {
   fetchData: () => Promise<void>;
-  onAfterDelete: () => void;
 }

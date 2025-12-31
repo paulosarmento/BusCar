@@ -3,7 +3,6 @@ import { Reserva } from "@/types/types";
 import {
   collection,
   getDocs,
-  addDoc,
   updateDoc,
   deleteDoc,
   doc,
@@ -11,14 +10,8 @@ import {
   Timestamp,
   query,
   where,
-  onSnapshot,
-  orderBy,
   runTransaction,
 } from "firebase/firestore";
-
-/* =========================
- * LISTAGENS
- * ========================= */
 
 export async function listarReservas() {
   const db = getFirestoreInstance();
@@ -54,10 +47,6 @@ export async function listarReservasPorUsuario(usuarioId: string) {
     ...doc.data(),
   })) as Reserva[];
 }
-
-/* =========================
- * CRIAÇÃO
- * ========================= */
 
 export async function adicionarReserva(
   reserva: Omit<Reserva, "id" | "createdAt" | "status"> & {
@@ -130,10 +119,6 @@ export async function adicionarReserva(
     };
   });
 }
-
-/* =========================
- * EDIÇÃO / EXCLUSÃO
- * ========================= */
 
 export async function editarReserva(id: string, reserva: Partial<Reserva>) {
   const db = getFirestoreInstance();
@@ -225,24 +210,5 @@ export async function cancelarReserva(id: string) {
       status: "cancelada",
       ...reservaData,
     };
-  });
-}
-
-/* =========================
- * REALTIME
- * ========================= */
-
-export function observarReservas(callback: (reservas: Reserva[]) => void) {
-  const db = getFirestoreInstance();
-  const reservasRef = collection(db, "reservas");
-  const q = query(reservasRef, orderBy("createdAt", "desc"));
-
-  return onSnapshot(q, (snapshot) => {
-    const reservas = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Reserva[];
-
-    callback(reservas);
   });
 }
