@@ -1,6 +1,7 @@
 import { getAuth, type Auth } from "firebase/auth";
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
+import { FirebaseStorage, getStorage } from "firebase/storage";
 
 // Get environment variables
 const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
@@ -71,7 +72,9 @@ function initializeFirebase() {
   }
   return app;
 }
-let db: Firestore | null = null;
+app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+authInstance = getAuth(app);
+export let db = getFirestore(app);
 
 export function getFirestoreInstance(): Firestore {
   if (!db) {
@@ -106,6 +109,25 @@ export function getAuthInstance(): Auth {
     );
   }
   return auth;
+}
+
+let storage: FirebaseStorage | null = null;
+
+export function getStorageInstance(): FirebaseStorage {
+  if (!storage) {
+    const firebaseApp = initializeFirebase();
+    if (firebaseApp) {
+      storage = getStorage(firebaseApp);
+    }
+  }
+
+  if (!storage) {
+    throw new Error(
+      "Firebase Storage não inicializado. Verifique as variáveis de ambiente."
+    );
+  }
+
+  return storage;
 }
 
 export let auth = authInstance;

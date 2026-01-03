@@ -1,13 +1,22 @@
-import { Timestamp } from "firebase/firestore";
+import type { Timestamp } from "firebase/firestore";
 
 export type TabKey = "carros" | "viagens" | "agendamentos";
-export type TipoCarro = "van" | "spin" | "doblo" | "carro";
+export type TipoCarro = "van" | "spin" | "doblo" | "carro" | "moto";
+
+export const TIPOS_CARRO: TipoCarro[] = [
+  "van",
+  "spin",
+  "doblo",
+  "carro",
+  "moto",
+];
 
 export const CAPACIDADE_POR_TIPO: Record<TipoCarro, number> = {
   van: 15,
   spin: 7,
   doblo: 7,
   carro: 4,
+  moto: 1,
 };
 
 export interface Carro {
@@ -25,7 +34,7 @@ export interface CarroFormData {
   placa: string;
   ativo: boolean;
   foto: string;
-  tipo: "van" | "spin" | "doblo" | "carro";
+  tipo: TipoCarro;
   capacidade: number;
 }
 
@@ -39,13 +48,45 @@ export interface FirebaseData {
   reservas: any[];
 }
 
+export type StatusViagem = "aberta" | "fechada" | "cancelada";
+
+export interface Viagem {
+  id: string;
+  carroId: string;
+  destino: string;
+  isTour: boolean;
+  dataHora: Date | Timestamp | string;
+  capacidadeMax: number;
+  vagasReservadas: number;
+  status: StatusViagem;
+  createdAt: Date | Timestamp | string;
+}
+
+export interface ViagemFormData {
+  carroId: string;
+  destino: string;
+  isTour: boolean;
+  dataHora: string;
+  capacidadeMax: number;
+  vagasReservadas: number;
+  status: StatusViagem;
+}
+
+export interface UseViagensProps {
+  fetchData: () => Promise<void>;
+}
+
+export type StatusReserva = "pendente_pagamento" | "confirmada" | "cancelada";
+
 export interface Reserva {
   id: string;
   viagemId: string;
   usuarioId: string;
   quantidadeVagas: number;
-  status: "confirmada" | "cancelada" | string;
-  createdAt?: string;
+  status: StatusReserva;
+  valorTotal: number;
+  mercadoPagoOrderId?: string;
+  createdAt: Date | Timestamp | string;
 }
 
 export interface ReservaFormData {
@@ -57,37 +98,14 @@ export interface UseReservasProps {
   fetchData: () => Promise<void>;
 }
 
-export type StatusViagem = "aberta" | "fechada" | "cancelada";
-
-export interface Viagem {
-  id: string;
-  carroId: string;
-
-  destino: string;
-  isTour: boolean;
-
-  dataHora: Date | Timestamp | string;
-
-  capacidadeMax: number;
-  vagasReservadas: number;
-
-  status: StatusViagem;
-
-  createdAt: Date | Timestamp | string;
+export interface PixPaymentData {
+  qrCode: string;
+  qrCodeBase64: string;
+  orderId: string;
+  amount: number;
 }
 
-export interface ViagemFormData {
-  carroId: string;
-  destino: string;
-  isTour: boolean;
-
-  dataHora: string;
-  capacidadeMax: number;
-  vagasReservadas: number;
-
-  status: StatusViagem;
-}
-
-export interface UseViagensProps {
-  fetchData: () => Promise<void>;
+export interface PixPaymentStatus {
+  status: "pending" | "approved" | "rejected" | "cancelled";
+  orderId: string;
 }

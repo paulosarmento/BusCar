@@ -1,6 +1,8 @@
 "use client";
 
+import { getStorageInstance } from "@/lib/firebase";
 import { Carro, CarroFormData, UseCarrosParams } from "@/types/types";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
 
 export function useCarros({ fetchData }: UseCarrosParams) {
@@ -15,6 +17,31 @@ export function useCarros({ fetchData }: UseCarrosParams) {
     capacidade: 4,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [uploadingFoto, setUploadingFoto] = useState(false);
+  const handleUploadFoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingFoto(true);
+
+    try {
+      const storage = getStorageInstance();
+
+      const fileRef = ref(storage, `fotos/${crypto.randomUUID()}-${file.name}`);
+
+      await uploadBytes(fileRef, file);
+
+      const url = await getDownloadURL(fileRef);
+
+      setFormData((prev) => ({
+        ...prev,
+        foto: url,
+      }));
+    } finally {
+      setUploadingFoto(false);
+    }
+  };
 
   const openAddDialog = () => {
     setEditingCar(null);
@@ -118,5 +145,7 @@ export function useCarros({ fetchData }: UseCarrosParams) {
     closeDialog,
     submit,
     remove,
+    handleUploadFoto,
+    uploadingFoto,
   };
 }

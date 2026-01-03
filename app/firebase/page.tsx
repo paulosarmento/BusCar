@@ -26,7 +26,7 @@ import { useCarros } from "../../hooks/useCarros";
 import { useViagens } from "../../hooks/useViagens";
 import { useReservas } from "../../hooks/useReservas";
 import { useFirebaseData } from "../../hooks/useFirebaseData";
-import { Reserva, TabKey } from "@/types/types";
+import type { TabKey } from "@/types/types";
 
 export default function Home() {
   const user = useAuthGuard();
@@ -72,6 +72,7 @@ export default function Home() {
     userId: user?.uid,
     fetchData,
   });
+
   const viagensHook = useViagens({
     fetchData,
     onViagemRemovida: reservasHook.fetchReservas,
@@ -81,9 +82,6 @@ export default function Home() {
     fetchData();
     reservasHook.fetchReservas();
   }, []);
-
-  // const reservasConfirmadas = reservasHook.reservasConfirmadas;
-  // const reservasCanceladas = reservasHook.reservasCanceladas;
 
   if (!user || loading) {
     return (
@@ -151,7 +149,6 @@ export default function Home() {
           className="w-full"
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-            {/* Tabs */}
             <div className="flex items-center">
               <TabsList>
                 <TabsTrigger value="carros" className="gap-2">
@@ -169,7 +166,6 @@ export default function Home() {
               </TabsList>
             </div>
 
-            {/* Botão */}
             {activeTab === "carros" && (
               <Button
                 className="gap-2 w-full sm:w-auto"
@@ -234,6 +230,8 @@ export default function Home() {
         isSubmitting={carrosHook.isSubmitting}
         onSubmit={carrosHook.submit}
         onClose={carrosHook.closeDialog}
+        handleUploadFoto={carrosHook.handleUploadFoto}
+        uploadingFoto={carrosHook.uploadingFoto}
       />
 
       <ViagemDialog
@@ -258,6 +256,14 @@ export default function Home() {
         isSubmitting={reservasHook.isSubmitting}
         onSubmit={reservasHook.submit}
         onClose={reservasHook.closeDialog}
+        showPayment={reservasHook.showPayment}
+        reservaAtual={reservasHook.reservaAtual}
+        onPaymentSuccess={() =>
+          reservasHook.confirmarPagamento(
+            reservasHook.reservaAtual?.id || "",
+            reservasHook.reservaAtual?.mercadoPagoOrderId || ""
+          )
+        }
       />
     </div>
   );

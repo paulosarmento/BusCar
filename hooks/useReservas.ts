@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type React from "react";
-import {
+import type {
   Reserva,
   ReservaFormData,
   UseReservasProps,
@@ -16,6 +16,9 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
   const [viagemSelecionada, setViagemSelecionada] = useState<Viagem | null>(
     null
   );
+
+  const [showPayment, setShowPayment] = useState(false);
+  const [reservaAtual, setReservaAtual] = useState<Reserva | null>(null);
 
   const [formData, setFormData] = useState<ReservaFormData>({
     quantidadeVagas: 1,
@@ -38,6 +41,11 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     [reservas]
   );
 
+  const reservasPendentes = useMemo(
+    () => reservas.filter((r) => r.status === "pendente_pagamento"),
+    [reservas]
+  );
+
   /* ===================== FETCH ===================== */
 
   async function fetchReservas() {
@@ -56,12 +64,16 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
   function openDialog(viagem: Viagem) {
     setViagemSelecionada(viagem);
     setFormData({ quantidadeVagas: 1 });
+    setShowPayment(false);
+    setReservaAtual(null);
     setIsDialogOpen(true);
   }
 
   function closeDialog() {
     setIsDialogOpen(false);
     setViagemSelecionada(null);
+    setShowPayment(false);
+    setReservaAtual(null);
     setFormData({ quantidadeVagas: 1 });
   }
 
@@ -74,6 +86,8 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     setIsSubmitting(true);
 
     try {
+      const valorTotal = formData.quantidadeVagas * 10; // R$ 10 por vaga
+
       const res = await fetch("/api/reservas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,16 +95,46 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
           viagemId: viagemSelecionada.id,
           usuarioId: userId,
           quantidadeVagas: formData.quantidadeVagas,
+          status: "pendente_pagamento",
+          valorTotal,
         }),
       });
 
       if (!res.ok) throw new Error("Erro ao criar reserva");
 
+      const reservaCriada = await res.json();
+      setReservaAtual(reservaCriada);
+      setShowPayment(true); // Mostrar tela de pagamento
+
+      await fetchReservas();
+      await fetchData();
+    } catch (error) {
+      console.error("Erro ao criar reserva:", error);
+      alert("Erro ao criar reserva. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function confirmarPagamento(
+    reservaId: string,
+    mercadoPagoOrderId: string
+  ) {
+    try {
+      const res = await fetch(`/api/reservas/${reservaId}/confirmar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mercadoPagoOrderId }),
+      });
+
+      if (!res.ok) throw new Error("Erro ao confirmar pagamento");
+
       await fetchReservas();
       await fetchData();
       closeDialog();
-    } finally {
-      setIsSubmitting(false);
+    } catch (error) {
+      console.error("Erro ao confirmar pagamento:", error);
+      throw error;
     }
   }
 
@@ -107,16 +151,21 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     reservasDoUsuario,
     reservasConfirmadas,
     reservasCanceladas,
+    reservasPendentes,
     viagemSelecionada,
+    reservaAtual,
     formData,
     isDialogOpen,
     isSubmitting,
+    showPayment,
     setFormData,
     setIsDialogOpen,
+    setShowPayment,
     fetchReservas,
     openDialog,
     closeDialog,
     submit,
+    confirmarPagamento,
     cancelar,
   };
 }

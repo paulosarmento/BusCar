@@ -1,36 +1,24 @@
 import { cancelarReserva } from "@/services/reservas.service";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(
-  request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await context.params;
 
-    // console.log("[v0] Cancelando reserva:", id);
-
     const reserva = await cancelarReserva(id);
 
+    return NextResponse.json(reserva);
+  } catch (error) {
+    console.error("Erro ao cancelar reserva:", error);
     return NextResponse.json(
       {
-        success: true,
-        message: "Reserva cancelada com sucesso",
-        reserva,
+        error:
+          error instanceof Error ? error.message : "Erro ao cancelar reserva",
       },
-      { status: 200 }
-    );
-  } catch (error: any) {
-    console.error("[v0] Erro ao cancelar reserva:", error);
-
-    const status = error.message?.includes("não encontrada") ? 404 : 400;
-
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Erro ao cancelar reserva",
-      },
-      { status }
+      { status: 500 }
     );
   }
 }

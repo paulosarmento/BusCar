@@ -108,7 +108,7 @@ export function CarrosTab({
           </Card>
         ))}
       </div>
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 mt-6">
         {carrosInativos.map((carro) => (
           <Card key={carro.id} className="group overflow-hidden">
             <div className="aspect-video bg-muted flex items-center justify-center relative">

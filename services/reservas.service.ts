@@ -1,5 +1,5 @@
 import { getFirestoreInstance } from "@/lib/firebase";
-import { Reserva } from "@/types/types";
+import type { Reserva } from "@/types/types";
 import {
   collection,
   getDocs,
@@ -28,18 +28,6 @@ export async function listarReservasPorViagem(viagemId: string) {
   const db = getFirestoreInstance();
   const reservasRef = collection(db, "reservas");
   const q = query(reservasRef, where("viagemId", "==", viagemId));
-  const querySnapshot = await getDocs(q);
-
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Reserva[];
-}
-
-export async function listarReservasPorUsuario(usuarioId: string) {
-  const db = getFirestoreInstance();
-  const reservasRef = collection(db, "reservas");
-  const q = query(reservasRef, where("usuarioId", "==", usuarioId));
   const querySnapshot = await getDocs(q);
 
   return querySnapshot.docs.map((doc) => ({
@@ -83,7 +71,7 @@ export async function adicionarReserva(
       throw new Error(`Vagas insuficientes. Disponíveis: ${vagasDisponiveis}`);
     }
 
-    // 🔹 Verificar se o usuário já tem reserva confirmada
+    // Verificar se o usuário já tem reserva confirmada
     const reservasRef = collection(db, "reservas");
     const q = query(
       reservasRef,
@@ -95,23 +83,20 @@ export async function adicionarReserva(
     const reservasSnap = await getDocs(q);
 
     if (!reservasSnap.empty) {
-      throw new Error("Você já possui uma reserva para esta viagem");
+      throw new Error("Usuário ja possui reserva confirmada");
     }
 
-    // 🔹 Criar reserva
+    // Criar reserva com status pendente_pagamento
     const reservaRef = doc(reservasRef);
     const reservaData = {
       ...reserva,
-      status: "confirmada" as const,
+      status: "pendente_pagamento" as const,
       createdAt: Timestamp.now(),
     };
 
     transaction.set(reservaRef, reservaData);
 
-    // 🔹 Atualizar vagas reservadas da viagem
-    transaction.update(viagemRef, {
-      vagasReservadas: vagasReservadasAtual + reserva.quantidadeVagas,
-    });
+    // NÃO atualiza vagas ainda - só quando pagamento for confirmado
 
     return {
       id: reservaRef.id,
@@ -152,10 +137,6 @@ export async function buscarReserva(id: string) {
   return { id: reservaDoc.id, ...reservaDoc.data() } as Reserva;
 }
 
-/* =========================
- * CANCELAMENTO
- * ========================= */
-
 export async function cancelarReserva(id: string) {
   const db = getFirestoreInstance();
   const reservaRef = doc(db, "reservas", id);
@@ -177,6 +158,69 @@ export async function cancelarReserva(id: string) {
       throw new Error("Não é possível cancelar uma reserva concluída");
     }
 
+    if (reservaData.status === "confirmada") {
+      const viagemRef = doc(db, "viagens", reservaData.viagemId);
+      const viagemSnap = await transaction.get(viagemRef);
+
+      if (!viagemSnap.exists()) {
+        throw new Error("Viagem não encontrada");
+      }
+
+      const viagemData = viagemSnap.data();
+      const vagasReservadasAtual = viagemData.vagasReservadas ?? 0;
+      const quantidadeVagas = reservaData.quantidadeVagas ?? 1;
+
+      // Devolver vagas para a viagem
+      const novasVagasReservadas = Math.max(
+        0,
+        vagasReservadasAtual - quantidadeVagas
+      );
+
+      transaction.update(viagemRef, {
+        vagasReservadas: novasVagasReservadas,
+      });
+    }
+
+    // Atualizar reserva
+    transaction.update(reservaRef, {
+      status: "cancelada",
+    });
+
+    return {
+      id,
+      status: "cancelada",
+      ...reservaData,
+    };
+  });
+}
+
+export async function confirmarPagamentoReserva(
+  reservaId: string,
+  mercadoPagoOrderId: string
+) {
+  const db = getFirestoreInstance();
+  const reservaRef = doc(db, "reservas", reservaId);
+
+  return await runTransaction(db, async (transaction) => {
+    const reservaSnap = await transaction.get(reservaRef);
+
+    if (!reservaSnap.exists()) {
+      throw new Error("Reserva não encontrada");
+    }
+
+    const reservaData = reservaSnap.data();
+
+    if (reservaData.status === "confirmada") {
+      console.log(`Reserva ${reservaId} já estava confirmada`);
+      return { id: reservaId, ...reservaData, alreadyConfirmed: true };
+    }
+
+    if (reservaData.status !== "pendente_pagamento") {
+      throw new Error(
+        `Esta reserva não está pendente de pagamento. Status atual: ${reservaData.status}`
+      );
+    }
+
     const viagemRef = doc(db, "viagens", reservaData.viagemId);
     const viagemSnap = await transaction.get(viagemRef);
 
@@ -185,30 +229,24 @@ export async function cancelarReserva(id: string) {
     }
 
     const viagemData = viagemSnap.data();
-
     const vagasReservadasAtual = viagemData.vagasReservadas ?? 0;
     const quantidadeVagas = reservaData.quantidadeVagas ?? 1;
 
-    // 🔹 Garantia extra: nunca deixar negativo
-    const novasVagasReservadas = Math.max(
-      0,
-      vagasReservadasAtual - quantidadeVagas
-    );
-
-    // 🔹 Atualizar reserva
     transaction.update(reservaRef, {
-      status: "cancelada",
+      status: "confirmada",
+      mercadoPagoOrderId,
+      confirmedAt: Timestamp.now(),
     });
 
-    // 🔹 Devolver vagas para a viagem
     transaction.update(viagemRef, {
-      vagasReservadas: novasVagasReservadas,
+      vagasReservadas: vagasReservadasAtual + quantidadeVagas,
     });
 
     return {
-      id,
-      status: "cancelada",
+      id: reservaId,
       ...reservaData,
+      status: "confirmada",
+      mercadoPagoOrderId,
     };
   });
 }

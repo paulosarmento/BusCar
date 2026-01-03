@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -12,7 +14,14 @@ import { Button } from "../components/Ui/button";
 import { Input } from "../components/Ui/input";
 import { Label } from "../components/Ui/label";
 import { Switch } from "../components/Ui/switch";
-import { CAPACIDADE_POR_TIPO, CarroFormData, TipoCarro } from "@/types/types";
+
+import {
+  CAPACIDADE_POR_TIPO,
+  CarroFormData,
+  TipoCarro,
+  TIPOS_CARRO,
+} from "@/types/types";
+
 import {
   Select,
   SelectContent,
@@ -20,6 +29,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./Ui/select";
+
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { getStorageInstance } from "@/lib/firebase";
 
 interface CarroDialogProps {
   open: boolean;
@@ -33,6 +45,8 @@ interface CarroDialogProps {
 
   onSubmit(e: React.FormEvent): void;
   onClose(): void;
+  handleUploadFoto(e: React.ChangeEvent<HTMLInputElement>): void;
+  uploadingFoto: boolean;
 }
 
 export function CarroDialog({
@@ -44,6 +58,8 @@ export function CarroDialog({
   isSubmitting,
   onSubmit,
   onClose,
+  handleUploadFoto,
+  uploadingFoto,
 }: CarroDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -98,7 +114,7 @@ export function CarroDialog({
                   setFormData({
                     ...formData,
                     tipo,
-                    capacidade: CAPACIDADE_POR_TIPO[tipo], // 🔥 sincroniza automaticamente
+                    capacidade: CAPACIDADE_POR_TIPO[tipo],
                   });
                 }}
                 required
@@ -107,10 +123,11 @@ export function CarroDialog({
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="carro">Carro</SelectItem>
-                  <SelectItem value="van">Van</SelectItem>
-                  <SelectItem value="spin">Spin</SelectItem>
-                  <SelectItem value="doblo">Doblo</SelectItem>
+                  {TIPOS_CARRO.map((tipo) => (
+                    <SelectItem key={tipo} value={tipo}>
+                      {tipo}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -131,14 +148,21 @@ export function CarroDialog({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="foto">URL da Foto</Label>
+              <Label htmlFor="foto">Foto</Label>
               <Input
                 id="foto"
-                value={formData.foto || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, foto: e.target.value })
-                }
+                type="file"
+                accept="image/*"
+                onChange={handleUploadFoto}
               />
+
+              {formData.foto && (
+                <img
+                  src={formData.foto}
+                  alt="Preview da foto"
+                  className="mt-2 h-32 w-full object-cover rounded-md border"
+                />
+              )}
             </div>
 
             <div className="flex items-center justify-between">
@@ -161,8 +185,10 @@ export function CarroDialog({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting
+            <Button type="submit" disabled={isSubmitting || uploadingFoto}>
+              {uploadingFoto
+                ? "Enviando imagem..."
+                : isSubmitting
                 ? "Salvando..."
                 : editingCar
                 ? "Salvar Alterações"
