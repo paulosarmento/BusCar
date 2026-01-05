@@ -3,9 +3,9 @@
 import type React from "react";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import Header from "../components/Header";
 import { useLanguage } from "../context/LanguageContext";
 import { contactTexts } from "@/lib/contactTexts";
+import Header from "../components/Header";
 
 export default function Contato() {
   const { language } = useLanguage();

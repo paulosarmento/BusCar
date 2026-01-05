@@ -91,11 +91,11 @@ export interface Reserva {
 
 export interface ReservaFormData {
   quantidadeVagas: number;
+  reservarCarro: boolean;
 }
 
 export interface UseReservasProps {
   userId: string | undefined;
-  fetchData: () => Promise<void>;
 }
 
 export interface PixPaymentData {
@@ -108,4 +108,48 @@ export interface PixPaymentData {
 export interface PixPaymentStatus {
   status: "pending" | "approved" | "rejected" | "cancelled";
   orderId: string;
+}
+
+// --- ReservaDialog ---
+export interface ReservaDialogProps {
+  open: boolean;
+  onOpenChange(open: boolean): void;
+  viagem: Viagem | null;
+  getCarroById(id: string): Carro;
+  formData: ReservaFormData;
+  setFormData: React.Dispatch<React.SetStateAction<ReservaFormData>>;
+  isSubmitting: boolean;
+  onSubmit(e: React.FormEvent): void;
+  onClose(): void;
+  showPayment?: boolean;
+  reservaAtual?: any;
+  onPaymentSuccess?: () => void;
+}
+
+export interface PixPaymentProps {
+  reservaId: string;
+  quantidadeVagas: number;
+  valorPorVaga: number;
+  onPaymentSuccess?: () => void;
+  onClose?: () => void;
+}
+
+export interface PaymentStatus {
+  mercadoPagoOrderId: string;
+  paymentId: string;
+  orderStatus: string;
+  paymentStatus: string;
+  statusDetail: string;
+  isPaid: boolean;
+  isPending: boolean;
+  isProcessing: boolean;
+  isExpired: boolean;
+  isRejected: boolean;
+  totalAmount: string;
+  paidAmount: string;
+  lastUpdated: string;
+  expirationDate: string;
+  paymentMethod: string;
+  qrCode: string;
+  ticketUrl: string;
 }

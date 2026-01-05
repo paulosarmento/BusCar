@@ -8,8 +8,10 @@ import type {
   UseReservasProps,
   Viagem,
 } from "@/types/types";
+import { useFirebaseData } from "./useFirebaseData";
 
-export function useReservas({ userId, fetchData }: UseReservasProps) {
+export function useReservas({ userId }: UseReservasProps) {
+  const { fetchData } = useFirebaseData();
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,6 +24,7 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
 
   const [formData, setFormData] = useState<ReservaFormData>({
     quantidadeVagas: 1,
+    reservarCarro: false,
   });
 
   /* ===================== DERIVAÇÕES ===================== */
@@ -63,7 +66,7 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
 
   function openDialog(viagem: Viagem) {
     setViagemSelecionada(viagem);
-    setFormData({ quantidadeVagas: 1 });
+    setFormData({ quantidadeVagas: 1, reservarCarro: false });
     setShowPayment(false);
     setReservaAtual(null);
     setIsDialogOpen(true);
@@ -74,7 +77,7 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     setViagemSelecionada(null);
     setShowPayment(false);
     setReservaAtual(null);
-    setFormData({ quantidadeVagas: 1 });
+    setFormData({ quantidadeVagas: 1, reservarCarro: false });
   }
 
   /* ===================== ACTIONS ===================== */
@@ -86,7 +89,7 @@ export function useReservas({ userId, fetchData }: UseReservasProps) {
     setIsSubmitting(true);
 
     try {
-      const valorTotal = formData.quantidadeVagas * 10; // R$ 10 por vaga
+      const valorTotal = formData.quantidadeVagas * 20; // R$ 20 por vaga ideal
 
       const res = await fetch("/api/reservas", {
         method: "POST",

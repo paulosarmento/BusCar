@@ -70,7 +70,6 @@ export default function Home() {
 
   const reservasHook = useReservas({
     userId: user?.uid,
-    fetchData,
   });
 
   const viagensHook = useViagens({
