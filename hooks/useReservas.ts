@@ -9,6 +9,7 @@ import type {
   Viagem,
 } from "@/types/types";
 import { useFirebaseData } from "./useFirebaseData";
+import { NextResponse } from "next/server";
 
 export function useReservas({ userId }: UseReservasProps) {
   const { fetchData } = useFirebaseData();
@@ -18,6 +19,7 @@ export function useReservas({ userId }: UseReservasProps) {
   const [viagemSelecionada, setViagemSelecionada] = useState<Viagem | null>(
     null
   );
+  const [modalAberta, setModalAberta] = useState(false);
 
   const [showPayment, setShowPayment] = useState(false);
   const [reservaAtual, setReservaAtual] = useState<Reserva | null>(null);
@@ -25,9 +27,8 @@ export function useReservas({ userId }: UseReservasProps) {
   const [formData, setFormData] = useState<ReservaFormData>({
     quantidadeVagas: 1,
     reservarCarro: false,
+    valorTotal: 0,
   });
-
-  /* ===================== DERIVAÇÕES ===================== */
 
   const reservasDoUsuario = useMemo(
     () => reservas.filter((r) => r.usuarioId === userId),
@@ -49,7 +50,10 @@ export function useReservas({ userId }: UseReservasProps) {
     [reservas]
   );
 
-  /* ===================== FETCH ===================== */
+  const detalheDaReserva = useMemo(
+    () => reservas.find((r) => r.id === reservaAtual?.id),
+    [reservas, reservaAtual]
+  );
 
   async function fetchReservas() {
     try {
@@ -62,11 +66,9 @@ export function useReservas({ userId }: UseReservasProps) {
     }
   }
 
-  /* ===================== UI ===================== */
-
   function openDialog(viagem: Viagem) {
     setViagemSelecionada(viagem);
-    setFormData({ quantidadeVagas: 1, reservarCarro: false });
+    setFormData({ quantidadeVagas: 1, reservarCarro: false, valorTotal: 0 });
     setShowPayment(false);
     setReservaAtual(null);
     setIsDialogOpen(true);
@@ -77,20 +79,18 @@ export function useReservas({ userId }: UseReservasProps) {
     setViagemSelecionada(null);
     setShowPayment(false);
     setReservaAtual(null);
-    setFormData({ quantidadeVagas: 1, reservarCarro: false });
+    setFormData({ quantidadeVagas: 1, reservarCarro: false, valorTotal: 0 });
   }
-
-  /* ===================== ACTIONS ===================== */
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!viagemSelecionada || !userId) return;
 
     setIsSubmitting(true);
+    console.log(viagemSelecionada);
+    console.log(formData);
 
     try {
-      const valorTotal = formData.quantidadeVagas * 20; // R$ 20 por vaga ideal
-
       const res = await fetch("/api/reservas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -99,7 +99,7 @@ export function useReservas({ userId }: UseReservasProps) {
           usuarioId: userId,
           quantidadeVagas: formData.quantidadeVagas,
           status: "pendente_pagamento",
-          valorTotal,
+          valorTotal: formData.valorTotal,
         }),
       });
 
@@ -141,12 +141,29 @@ export function useReservas({ userId }: UseReservasProps) {
     }
   }
 
-  async function cancelar(id: string) {
+  async function cancelarReserva(id: string) {
     if (!confirm("Tem certeza que deseja cancelar esta reserva?")) return;
 
     await fetch(`/api/reservas/${id}/cancelar`, { method: "POST" });
     await fetchReservas();
     await fetchData();
+  }
+
+  async function verDetalhes(id: string) {
+    const res = await fetch(`/api/reservas/${id}`, { method: "GET" });
+    const reserva = await res.json();
+    setReservaAtual(reserva);
+    setModalAberta(true);
+  }
+
+  function handleGerarPix(reserva: Reserva, viagem: Viagem) {
+    setModalAberta(false);
+    setReservaAtual(reserva);
+    setShowPayment(true);
+    setIsDialogOpen(true);
+
+    // ✅ viagem REAL, com carroId
+    setViagemSelecionada(viagem);
   }
 
   return {
@@ -169,6 +186,11 @@ export function useReservas({ userId }: UseReservasProps) {
     closeDialog,
     submit,
     confirmarPagamento,
-    cancelar,
+    cancelarReserva,
+    detalheDaReserva,
+    modalAberta,
+    setModalAberta,
+    verDetalhes,
+    handleGerarPix,
   };
 }

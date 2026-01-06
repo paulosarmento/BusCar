@@ -5,7 +5,10 @@ import {
 } from "@/services/reservas.service";
 import { NextResponse } from "next/server";
 
-export async function GET(context: { params: Promise<{ id: string }> }) {
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await context.params;
     const reserva = await buscarReserva(id);

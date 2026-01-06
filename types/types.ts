@@ -87,11 +87,13 @@ export interface Reserva {
   valorTotal: number;
   mercadoPagoOrderId?: string;
   createdAt: Date | Timestamp | string;
+  codigoDaReserva: number;
 }
 
 export interface ReservaFormData {
   quantidadeVagas: number;
   reservarCarro: boolean;
+  valorTotal: number;
 }
 
 export interface UseReservasProps {

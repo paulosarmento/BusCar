@@ -21,6 +21,26 @@ export function HeaderAdm({ user, setActiveTab, logout }: any) {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveTab("paradas")}
+              className="gap-2 bg-transparent"
+            >
+              <Car className="w-4 h-4" />
+              <span className="hidden sm:inline">destino</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveTab("agendamentos")}
+              className="gap-2 bg-transparent"
+            >
+              <Car className="w-4 h-4" />
+              <span className="hidden sm:inline">Agendamentos</span>
+            </Button>
+          </div>
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-3">
               <Avatar className="border-2 border-primary/20">
                 <AvatarFallback className="bg-primary text-primary-foreground">

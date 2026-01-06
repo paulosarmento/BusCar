@@ -19,7 +19,7 @@ import { usePixPayment } from "@/hooks/usePixPayment";
 export function PixPayment({
   reservaId,
   quantidadeVagas,
-  valorPorVaga = 10,
+  valorPorVaga,
   onPaymentSuccess,
   onClose,
 }: PixPaymentProps) {
@@ -47,6 +47,7 @@ export function PixPayment({
     valorPorVaga,
     onPaymentSuccess,
     onClose,
+    
   });
 
   React.useEffect(() => {

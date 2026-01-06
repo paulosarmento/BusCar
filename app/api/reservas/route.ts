@@ -20,8 +20,10 @@ export async function POST(request: Request) {
       viagemId,
       usuarioId,
       quantidadeVagas,
-      valorTotal: valorTotal || quantidadeVagas * 10,
+      valorTotal,
+      codigoDaReserva: Math.floor(Math.random() * 1000000),
     });
+    console.log("AAaAAAAAAAAAAAAAAAQUIIIIASDIJAISDKNASDNJ:", valorTotal);
 
     return NextResponse.json(reserva, { status: 201 });
   } catch (error) {

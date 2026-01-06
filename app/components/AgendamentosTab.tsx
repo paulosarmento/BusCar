@@ -12,20 +12,36 @@ import { Button } from "../components/Ui/button";
 import { Badge } from "../components/Ui/badge";
 import { Calendar, Car } from "lucide-react";
 import { Carro, Reserva, Viagem } from "@/types/types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./Ui/dialog";
+import { ReservaDetail } from "./ReservaDetail";
+import { useReservas } from "@/hooks/useReservas";
 
 interface AgendamentosTabProps {
   reservas: Reserva[];
   getViagemById: (id: string) => Viagem | undefined;
   getCarroById: (id: string) => Carro | undefined;
+  reservaAtual: Reserva | null;
+
   onCancelReserva: (id: string) => void;
+  onVerDetalhes: (id: string) => void;
+  modalAberta: boolean;
+  setModalAberta: React.Dispatch<React.SetStateAction<boolean>>;
+  handleGerarPix: (reserva: Reserva, viagem: Viagem) => void;
+  viagemSelecionada: Viagem | null;
 }
 
 export function AgendamentosTab({
   reservas,
+  reservaAtual,
+  viagemSelecionada,
   getViagemById,
   getCarroById,
   onCancelReserva,
+  modalAberta,
+  setModalAberta,
+  onVerDetalhes,
+  handleGerarPix,
 }: AgendamentosTabProps) {
   return (
     <TabsContent value="agendamentos" className="mt-0">
@@ -161,6 +177,18 @@ export function AgendamentosTab({
                           Cancelar Reserva
                         </Button>
                       )}
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full mt-4"
+                        onClick={() => {
+                          onVerDetalhes(reserva.id);
+                          setModalAberta(true);
+                        }}
+                      >
+                        Detalhes
+                      </Button>
                     </CardContent>
                   </div>
                 </div>
@@ -169,6 +197,31 @@ export function AgendamentosTab({
           })}
         </div>
       )}
+      <Dialog open={modalAberta} onOpenChange={setModalAberta}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Detalhes da Reserva</DialogTitle>
+          </DialogHeader>
+
+          {reservaAtual && (
+            <ReservaDetail
+              id={reservaAtual.id}
+              usuarioId={reservaAtual.usuarioId}
+              viagemId={reservaAtual.viagemId}
+              status={reservaAtual.status}
+              valorTotal={reservaAtual.valorTotal}
+              quantidadeVagas={reservaAtual.quantidadeVagas}
+              codigoDaReserva={reservaAtual.codigoDaReserva}
+              onGerarPix={() =>
+                handleGerarPix(
+                  reservaAtual,
+                  getViagemById(reservaAtual.viagemId)!
+                )
+              }
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </TabsContent>
   );
 }

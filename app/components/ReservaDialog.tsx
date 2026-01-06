@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { useMemo } from "react";
 import {
   Dialog,
@@ -18,7 +16,6 @@ import { Alert, AlertDescription } from "./Ui/alert";
 
 import type { ReservaDialogProps } from "@/types/types";
 import { PixPayment } from "./PixPayment";
-import { usePixPayment } from "@/hooks/usePixPayment";
 
 export function ReservaDialog({
   open,
@@ -37,22 +34,22 @@ export function ReservaDialog({
   function getValorPorVaga(tipo?: string): number {
     switch (tipo) {
       case "carro":
-        return 5;
+        return 20;
       case "moto":
-        return 3;
+        return 20;
       case "van":
-        return 10;
+        return 5;
       case "spin":
-        return 7;
+        return 15;
       case "doblo":
-        return 7;
+        return 15;
       default:
         return 2; // valor padrão
     }
   }
+
   const carro = getCarroById(viagem?.carroId || "");
   const valorPorVaga = getValorPorVaga(carro?.tipo);
-
   const vagasDisponiveis = useMemo(() => {
     if (!viagem) return 0;
     return viagem.capacidadeMax - viagem.vagasReservadas;
@@ -134,15 +131,17 @@ export function ReservaDialog({
                   min={1}
                   max={vagasDisponiveis}
                   value={formData.quantidadeVagas}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const novaQuantidade = Math.min(
+                      Math.max(1, Number(e.target.value)),
+                      vagasDisponiveis
+                    );
                     setFormData({
-                      quantidadeVagas: Math.min(
-                        Math.max(1, Number(e.target.value)),
-                        vagasDisponiveis
-                      ),
+                      quantidadeVagas: novaQuantidade,
                       reservarCarro: false,
-                    })
-                  }
+                      valorTotal: novaQuantidade * valorPorVaga,
+                    });
+                  }}
                   disabled={vagasDisponiveis === 0}
                   required
                 />
@@ -151,20 +150,20 @@ export function ReservaDialog({
                     type="checkbox"
                     id="reservarCarro"
                     checked={formData.reservarCarro}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const novaQuantidade = e.target.checked
+                        ? vagasDisponiveis
+                        : 1;
                       setFormData((prev) => ({
                         ...prev,
                         reservarCarro: e.target.checked,
-                        quantidadeVagas: e.target.checked
-                          ? vagasDisponiveis
-                          : 1,
-                      }))
-                    }
+                        quantidadeVagas: novaQuantidade,
+                        valorTotal: novaQuantidade * valorPorVaga,
+                      }));
+                    }}
                   />
-
                   <label htmlFor="reservarCarro">Reservar {carro?.tipo}</label>
                 </div>
-
                 <p className="text-xs text-muted-foreground">
                   Máximo permitido: {vagasDisponiveis}{" "}
                   {vagasDisponiveis === 1 ? "vaga" : "vagas"}

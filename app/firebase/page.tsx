@@ -1,6 +1,7 @@
 "use client";
 
 import { getAuthInstance } from "@/lib/firebase";
+
 import { signOut } from "firebase/auth";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -209,12 +210,22 @@ export default function Home() {
             />
           </TabsContent>
 
+          <TabsContent value="paradas" className="mt-0">
+            <div className="mt-4">Paradas</div>
+          </TabsContent>
+
           <TabsContent value="agendamentos" className="mt-0">
             <AgendamentosTab
               reservas={reservasHook.reservasDoUsuario}
               getViagemById={getViagemById}
               getCarroById={getCarroById}
-              onCancelReserva={reservasHook.cancelar}
+              onCancelReserva={reservasHook.cancelarReserva}
+              modalAberta={reservasHook.modalAberta}
+              reservaAtual={reservasHook.reservaAtual}
+              setModalAberta={reservasHook.setModalAberta}
+              onVerDetalhes={reservasHook.verDetalhes}
+              handleGerarPix={reservasHook.handleGerarPix}
+              viagemSelecionada={reservasHook.viagemSelecionada}
             />
           </TabsContent>
         </Tabs>
