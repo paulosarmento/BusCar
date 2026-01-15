@@ -10,14 +10,13 @@ import {
 import { TabsContent } from "../components/Ui/tabs";
 import { Button } from "../components/Ui/button";
 import { Badge } from "../components/Ui/badge";
-import { Calendar, Car } from "lucide-react";
+import { Calendar, Car, ArrowRight } from "lucide-react";
 import { Carro, Reserva, Viagem } from "@/types/types";
-import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./Ui/dialog";
 import { ReservaDetail } from "./ReservaDetail";
-import { useReservas } from "@/hooks/useReservas";
 
 interface AgendamentosTabProps {
+  role: string;
   reservas: Reserva[];
   getViagemById: (id: string) => Viagem | undefined;
   getCarroById: (id: string) => Carro | undefined;
@@ -32,9 +31,9 @@ interface AgendamentosTabProps {
 }
 
 export function AgendamentosTab({
+  role,
   reservas,
   reservaAtual,
-  viagemSelecionada,
   getViagemById,
   getCarroById,
   onCancelReserva,
@@ -43,28 +42,88 @@ export function AgendamentosTab({
   onVerDetalhes,
   handleGerarPix,
 }: AgendamentosTabProps) {
+  // --- NOVA LÓGICA INTELIGENTE DE PARADAS ---
+  const resolveNomeParada = (
+    id: string | undefined,
+    tipo: "embarque" | "desembarque",
+    viagem: Viagem | undefined
+  ) => {
+    if (!viagem) return "--";
+    const paradas = viagem.paradas || [];
+
+    // 1. Se o usuário escolheu uma parada específica (ID não é "padrao")
+    if (id && id !== "padrao") {
+      const encontrada = paradas.find((p) => p.id === id);
+      if (encontrada) return encontrada.nome;
+    }
+
+    // 2. Se for "padrao", buscamos a parada principal na lista
+    if (tipo === "embarque") {
+      // Pega a primeira que for "embarque" ou "ambos"
+      const pEmbarque = paradas.find(
+        (p) => p.tipo === "embarque" || p.tipo === "ambos"
+      );
+      // Fallback se não achar: Origem genérica ou texto fixo
+      return pEmbarque ? pEmbarque.nome : "Ponto de Encontro";
+    }
+
+    if (tipo === "desembarque") {
+      // Pega a primeira que for "desembarque" ou "ambos"
+      // Dica: num array ordenado, idealmente pegaríamos a última, mas o find pega a primeira.
+      // Se sua lista de paradas estiver em ordem cronológica, o find funciona bem para definir o padrão.
+      const pDesembarque = paradas.find(
+        (p) => p.tipo === "desembarque" || p.tipo === "ambos"
+      );
+
+      // Fallback: Usa o Destino principal da Viagem (ex: "Rio de Janeiro")
+      return pDesembarque ? pDesembarque.nome : viagem.destino;
+    }
+
+    return "--";
+  };
+
+  // Prepara dados para o Modal
+  const getDetalhesReservaAtual = () => {
+    if (!reservaAtual) return null;
+    const viagem = getViagemById(reservaAtual.viagemId);
+
+    const nomeEmbarque = resolveNomeParada(
+      reservaAtual.paradaEmbarqueId,
+      "embarque",
+      viagem
+    );
+
+    const nomeDesembarque = resolveNomeParada(
+      reservaAtual.paradaDesembarqueId,
+      "desembarque",
+      viagem
+    );
+
+    return { viagem, nomeEmbarque, nomeDesembarque };
+  };
+
+  const detalhesAtual = getDetalhesReservaAtual();
+
   return (
     <TabsContent value="agendamentos" className="mt-0">
       {reservas.length === 0 ? (
-        <Card className="border-dashed">
+        <Card className="border-dashed bg-slate-50/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
-              Nenhum agendamento encontrado
+              Nenhum agendamento
             </CardTitle>
             <CardDescription>
-              Quando você fizer reservas de viagens, elas aparecerão aqui.
+              Você ainda não possui viagens agendadas.
             </CardDescription>
           </CardHeader>
-
           <CardContent>
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="p-4 rounded-full bg-muted mb-4">
-                <Calendar className="w-12 h-12 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <div className="p-4 rounded-full bg-white shadow-sm mb-4">
+                <Car className="w-10 h-10 text-muted-foreground/50" />
               </div>
-              <p className="text-lg font-medium mb-2">Nenhuma reserva ainda</p>
-              <p className="text-sm text-muted-foreground max-w-sm">
-                Explore as viagens disponíveis e faça sua primeira reserva.
+              <p className="text-sm text-muted-foreground">
+                Faça sua primeira reserva na aba "Viagens".
               </p>
             </div>
           </CardContent>
@@ -74,19 +133,31 @@ export function AgendamentosTab({
           {reservas.map((reserva) => {
             const viagem = getViagemById(reserva.viagemId);
             const carro = viagem ? getCarroById(viagem.carroId) : undefined;
-
             const viagemExiste = Boolean(viagem);
             const podeCancelar =
               viagemExiste && reserva.status === "confirmada";
 
+            // Busca nomes corrigidos para o Card da Lista
+            const nomeEmbarqueLista = resolveNomeParada(
+              reserva.paradaEmbarqueId,
+              "embarque",
+              viagem
+            );
+
+            const nomeDesembarqueLista = resolveNomeParada(
+              reserva.paradaDesembarqueId,
+              "desembarque",
+              viagem
+            );
+
             return (
               <Card
                 key={reserva.id}
-                className="overflow-hidden hover:shadow-lg transition-shadow"
+                className="overflow-hidden hover:shadow-md transition-all group border-l-4 border-l-primary"
               >
                 <div className="flex flex-col md:flex-row">
-                  {/* IMAGEM / PLACEHOLDER */}
-                  <div className="md:w-48 h-48 md:h-auto bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                  {/* FOTO DO CARRO */}
+                  <div className="md:w-48 bg-slate-100 flex items-center justify-center min-h-[160px] relative">
                     {carro?.foto ? (
                       <img
                         src={carro.foto}
@@ -96,99 +167,117 @@ export function AgendamentosTab({
                     ) : (
                       <Car className="w-12 h-12 text-slate-300" />
                     )}
+                    <Badge
+                      variant={
+                        reserva.status === "confirmada"
+                          ? "default"
+                          : "secondary"
+                      }
+                      className="absolute top-2 left-2 shadow-sm"
+                    >
+                      {reserva.status === "pendente_pagamento"
+                        ? "Pendente"
+                        : reserva.status}
+                    </Badge>
                   </div>
 
-                  <div className="flex-1  mt-10 md:mt-0">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
+                  <div className="flex-1 p-1">
+                    <CardHeader className="pb-2">
+                      <div className="flex justify-between items-start">
                         <div>
-                          <CardTitle className="flex items-center gap-2">
-                            <Calendar className="w-5 h-5 text-primary" />
+                          <CardTitle className="text-lg flex items-center gap-2">
                             {viagemExiste ? viagem!.destino : "Viagem removida"}
                           </CardTitle>
-
-                          <CardDescription className="font-mono">
+                          <CardDescription>
                             {carro
-                              ? `${carro.modelo} — ${carro.placa}`
+                              ? `${carro.modelo} • ${carro.placa}`
                               : "Carro não disponível"}
                           </CardDescription>
                         </div>
-
-                        <Badge
-                          variant={
-                            reserva.status === "confirmada"
-                              ? "default"
-                              : reserva.status === "cancelada"
-                              ? "destructive"
-                              : "secondary"
-                          }
-                        >
-                          {reserva.status}
-                        </Badge>
+                        <div className="text-right">
+                          <span className="text-lg font-bold text-primary">
+                            {new Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(reserva.valorTotal)}
+                          </span>
+                        </div>
                       </div>
                     </CardHeader>
 
                     <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 ">
-                        <div>
-                          <p className="text-sm text-muted-foreground">
-                            Data e Hora
-                          </p>
-                          <p className="font-medium text-sm">
-                            {viagem?.dataHora
-                              ? new Date(
-                                  viagem.dataHora as string
-                                ).toLocaleString("pt-BR", {
-                                  dateStyle: "short",
-                                  timeStyle: "short",
-                                })
-                              : "—"}
-                          </p>
+                      {/* Datas e Vagas */}
+                      <div className="flex gap-4 text-sm text-muted-foreground mb-4">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-4 h-4" />
+                          {viagem?.dataHora
+                            ? new Date(
+                                viagem.dataHora as string
+                              ).toLocaleString("pt-BR", {
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              })
+                            : "--"}
                         </div>
-
-                        <div>
-                          <p className="text-sm text-muted-foreground">
-                            Capacidade
-                          </p>
-                          <p className="font-medium text-sm">
-                            {viagem?.capacidadeMax ?? "—"}
-                          </p>
-                        </div>
-
-                        <div>
-                          <p className="text-sm text-muted-foreground">
-                            Vagas reservadas
-                          </p>
-                          <p className="font-medium text-sm">
-                            {reserva.quantidadeVagas ?? 1}
-                          </p>
+                        <div className="flex items-center gap-1.5">
+                          <Car className="w-4 h-4" />
+                          {reserva.quantidadeVagas}{" "}
+                          {reserva.quantidadeVagas > 1 ? "assentos" : "assento"}
                         </div>
                       </div>
 
-                      {/* BOTÃO SÓ EXISTE SE CONFIRMADA */}
+                      {/* CARD VISUAL DE EMBARQUE/DESEMBARQUE NA LISTA */}
+                      <div className="bg-slate-50 border rounded-md p-3 mb-4 grid grid-cols-[1fr,auto,1fr] gap-2 items-center">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-bold text-green-600 uppercase">
+                            Embarque
+                          </span>
+                          <span
+                            className="text-sm font-medium leading-tight truncate"
+                            title={nomeEmbarqueLista}
+                          >
+                            {nomeEmbarqueLista}
+                          </span>
+                        </div>
 
-                      {podeCancelar && (
+                        <ArrowRight className="w-4 h-4 text-slate-300" />
+
+                        <div className="flex flex-col text-right">
+                          <span className="text-[10px] font-bold text-red-600 uppercase">
+                            Desembarque
+                          </span>
+                          <span
+                            className="text-sm font-medium leading-tight truncate"
+                            title={nomeDesembarqueLista}
+                          >
+                            {nomeDesembarqueLista}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 justify-end">
+                        {podeCancelar && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                            onClick={() => onCancelReserva(reserva.id)}
+                          >
+                            Cancelar
+                          </Button>
+                        )}
+
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full text-destructive bg-transparent"
-                          onClick={() => onCancelReserva(reserva.id)}
+                          onClick={() => {
+                            onVerDetalhes(reserva.id);
+                            setModalAberta(true);
+                          }}
                         >
-                          Cancelar Reserva
+                          Ver Detalhes / Pagamento
                         </Button>
-                      )}
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full mt-4"
-                        onClick={() => {
-                          onVerDetalhes(reserva.id);
-                          setModalAberta(true);
-                        }}
-                      >
-                        Detalhes
-                      </Button>
+                      </div>
                     </CardContent>
                   </div>
                 </div>
@@ -197,13 +286,15 @@ export function AgendamentosTab({
           })}
         </div>
       )}
+
+      {/* MODAL DE DETALHES */}
       <Dialog open={modalAberta} onOpenChange={setModalAberta}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[450px]">
           <DialogHeader>
-            <DialogTitle>Detalhes da Reserva</DialogTitle>
+            <DialogTitle>Detalhes da Viagem</DialogTitle>
           </DialogHeader>
 
-          {reservaAtual && (
+          {reservaAtual && detalhesAtual && (
             <ReservaDetail
               id={reservaAtual.id}
               usuarioId={reservaAtual.usuarioId}
@@ -212,6 +303,10 @@ export function AgendamentosTab({
               valorTotal={reservaAtual.valorTotal}
               quantidadeVagas={reservaAtual.quantidadeVagas}
               codigoDaReserva={reservaAtual.codigoDaReserva}
+              // Passando os nomes corrigidos
+              nomeEmbarque={detalhesAtual.nomeEmbarque}
+              nomeDesembarque={detalhesAtual.nomeDesembarque}
+              dataViagem={detalhesAtual.viagem?.dataHora as string}
               onGerarPix={() =>
                 handleGerarPix(
                   reservaAtual,

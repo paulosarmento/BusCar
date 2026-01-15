@@ -1,6 +1,8 @@
 import type { Timestamp } from "firebase/firestore";
 
-export type TabKey = "carros" | "viagens" | "agendamentos";
+// Atualizado para incluir a nova aba se desejar gerenciar paradas globais futuramente
+export type TabKey = "carros" | "viagens" | "agendamentos" | "destinos";
+
 export type TipoCarro = "van" | "spin" | "doblo" | "carro" | "moto";
 
 export const TIPOS_CARRO: TipoCarro[] = [
@@ -38,21 +40,12 @@ export interface CarroFormData {
   capacidade: number;
 }
 
-export interface UseCarrosParams {
-  fetchData: () => Promise<void>;
-}
-
-export interface FirebaseData {
-  carros: any[];
-  viagens: any[];
-  reservas: any[];
-}
-
 export type StatusViagem = "aberta" | "fechada" | "cancelada";
 
 export interface Viagem {
   id: string;
   carroId: string;
+  origem: string;
   destino: string;
   isTour: boolean;
   dataHora: Date | Timestamp | string;
@@ -60,22 +53,24 @@ export interface Viagem {
   vagasReservadas: number;
   status: StatusViagem;
   createdAt: Date | Timestamp | string;
+  // Lista de paradas disponíveis nesta viagem
+  paradas: Parada[];
 }
 
 export interface ViagemFormData {
   carroId: string;
   destino: string;
+  origem: string;
   isTour: boolean;
   dataHora: string;
   capacidadeMax: number;
   vagasReservadas: number;
   status: StatusViagem;
+  //Paradas no formulário
+  paradas: Parada[];
 }
 
-export interface UseViagensProps {
-  fetchData: () => Promise<void>;
-}
-
+// --- Reservas ---
 export type StatusReserva = "pendente_pagamento" | "confirmada" | "cancelada";
 
 export interface Reserva {
@@ -88,12 +83,39 @@ export interface Reserva {
   mercadoPagoOrderId?: string;
   createdAt: Date | Timestamp | string;
   codigoDaReserva: number;
+  //A escolha específica do passageiro
+  paradaEmbarqueId: string;
+  paradaDesembarqueId: string;
 }
 
 export interface ReservaFormData {
   quantidadeVagas: number;
   reservarCarro: boolean;
   valorTotal: number;
+  // IDs selecionados no modal de reserva
+  paradaEmbarqueId: string;
+  paradaDesembarqueId: string;
+}
+
+export interface UseCarrosParams {
+  fetchData: () => Promise<void>;
+}
+interface Destino {
+  id: string;
+  origem: string;
+  destino: string;
+  foto: string;
+  ativo: boolean;
+}
+export interface FirebaseData {
+  carros: Carro[];
+  viagens: Viagem[];
+  reservas: Reserva[];
+  destinos: Destino[];
+}
+
+export interface UseViagensProps {
+  fetchData: () => Promise<void>;
 }
 
 export interface UseReservasProps {
@@ -112,12 +134,11 @@ export interface PixPaymentStatus {
   orderId: string;
 }
 
-// --- ReservaDialog ---
 export interface ReservaDialogProps {
   open: boolean;
   onOpenChange(open: boolean): void;
   viagem: Viagem | null;
-  getCarroById(id: string): Carro;
+  getCarroById(id: string): Carro | undefined;
   formData: ReservaFormData;
   setFormData: React.Dispatch<React.SetStateAction<ReservaFormData>>;
   isSubmitting: boolean;
@@ -154,4 +175,13 @@ export interface PaymentStatus {
   paymentMethod: string;
   qrCode: string;
   ticketUrl: string;
+}
+
+export type TipoParada = "embarque" | "desembarque" | "ambos";
+
+export interface Parada {
+  id: string;
+  nome: string;
+  tipo: TipoParada;
+  // ordem?: number; // Útil para ordenar o trajeto (ex: Rio -> Saquarema -> Araruama)
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,14 @@ import {
 import { Button } from "./Ui/button";
 import { Input } from "./Ui/input";
 import { Label } from "./Ui/label";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "./Ui/alert";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./Ui/select";
+import { MapPin, Users } from "lucide-react";
 import type { ReservaDialogProps } from "@/types/types";
 import { PixPayment } from "./PixPayment";
 
@@ -31,29 +36,74 @@ export function ReservaDialog({
   reservaAtual = null,
   onPaymentSuccess,
 }: ReservaDialogProps) {
-  function getValorPorVaga(tipo?: string): number {
-    switch (tipo) {
-      case "carro":
-        return 20;
-      case "moto":
-        return 20;
-      case "van":
-        return 5;
-      case "spin":
-        return 15;
-      case "doblo":
-        return 15;
-      default:
-        return 2; // valor padrão
-    }
-  }
-
   const carro = getCarroById(viagem?.carroId || "");
-  const valorPorVaga = getValorPorVaga(carro?.tipo);
+
+  // Define o valor por vaga baseado no tipo do carro
+  const valorPorVaga = useMemo(() => {
+    switch (carro?.tipo) {
+      case "van":
+        return 25;
+      case "spin":
+        return 30;
+      default:
+        return 20;
+    }
+  }, [carro?.tipo]);
+
+  // Cálculo Simples de Vagas Disponíveis (Capacidade Total - Reservadas)
   const vagasDisponiveis = useMemo(() => {
     if (!viagem) return 0;
-    return viagem.capacidadeMax - viagem.vagasReservadas;
+    const ocupadas = viagem.vagasReservadas || 0;
+    return Math.max(0, viagem.capacidadeMax - ocupadas);
   }, [viagem]);
+
+  const paradasEmbarque = useMemo(
+    () =>
+      viagem?.paradas?.filter(
+        (p) => p.tipo === "embarque" || p.tipo === "ambos"
+      ) || [],
+    [viagem]
+  );
+
+  const paradasDesembarque = useMemo(
+    () =>
+      viagem?.paradas?.filter(
+        (p) => p.tipo === "desembarque" || p.tipo === "ambos"
+      ) || [],
+    [viagem]
+  );
+
+  // --- CORREÇÃO DO ID ---
+  // Quando o modal abre, se houver paradas cadastradas, limpamos o valor "padrao"
+  // para forçar o usuário a selecionar uma opção válida e enviar o ID correto.
+  useEffect(() => {
+    if (open && viagem) {
+      setFormData((prev) => {
+        const deveLimparEmbarque =
+          paradasEmbarque.length > 0 && prev.paradaEmbarqueId === "padrao";
+        const deveLimparDesembarque =
+          paradasDesembarque.length > 0 &&
+          prev.paradaDesembarqueId === "padrao";
+
+        if (deveLimparEmbarque || deveLimparDesembarque) {
+          return {
+            ...prev,
+            paradaEmbarqueId: deveLimparEmbarque ? "" : prev.paradaEmbarqueId,
+            paradaDesembarqueId: deveLimparDesembarque
+              ? ""
+              : prev.paradaDesembarqueId,
+          };
+        }
+        return prev;
+      });
+    }
+  }, [
+    open,
+    viagem,
+    paradasEmbarque.length,
+    paradasDesembarque.length,
+    setFormData,
+  ]);
 
   if (!viagem) return null;
 
@@ -61,153 +111,165 @@ export function ReservaDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-auto">
         {showPayment && reservaAtual ? (
-          <div>
-            <PixPayment
-              reservaId={reservaAtual.id}
-              quantidadeVagas={reservaAtual.quantidadeVagas}
-              valorPorVaga={valorPorVaga}
-              onPaymentSuccess={onPaymentSuccess}
-              onClose={onClose}
-            />
-          </div>
+          <PixPayment
+            reservaId={reservaAtual.id}
+            quantidadeVagas={reservaAtual.quantidadeVagas}
+            valorPorVaga={valorPorVaga}
+            onPaymentSuccess={onPaymentSuccess}
+            onClose={onClose}
+          />
         ) : (
           <form onSubmit={onSubmit}>
             <DialogHeader>
               <DialogTitle>Reservar Vagas</DialogTitle>
               <DialogDescription>
-                Escolha quantas vagas deseja reservar nesta viagem
+                Viagem para{" "}
+                <span className="font-bold text-primary">{viagem.destino}</span>
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid gap-4 py-2">
-              {/* Resumo da Viagem */}
-              <div className="rounded-lg bg-muted p-3 space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Destino:</span>
-                  <span className="font-medium">{viagem.destino}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Carro:</span>
-                  <span className="font-medium">{carro?.modelo}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Data:</span>
-                  <span className="font-medium">
-                    {new Date(viagem.dataHora as string).toLocaleString(
-                      "pt-BR",
-                      {
-                        dateStyle: "short",
-                        timeStyle: "short",
-                      }
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">
-                    Vagas disponíveis:
-                  </span>
-                  <span className="font-semibold text-primary">
-                    {vagasDisponiveis}
-                  </span>
+            <div className="grid gap-4 py-4">
+              {/* ALERTA DE VAGAS */}
+              <div
+                className={`p-3 rounded-md border flex items-center gap-3 ${
+                  vagasDisponiveis > 0
+                    ? "bg-blue-50 border-blue-200 text-blue-700"
+                    : "bg-red-50 border-red-200 text-red-700"
+                }`}
+              >
+                <Users className="w-5 h-5" />
+                <div className="flex-1">
+                  <p className="font-semibold text-sm">Disponibilidade</p>
+                  <p className="text-xs">
+                    {vagasDisponiveis > 0
+                      ? `Restam ${vagasDisponiveis} vagas no total.`
+                      : "Viagem lotada."}
+                  </p>
                 </div>
               </div>
 
-              {/* Alerta de vagas esgotadas */}
-              {vagasDisponiveis === 0 && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Não há vagas disponíveis para esta viagem
-                  </AlertDescription>
-                </Alert>
-              )}
+              {/* Seleção de Paradas */}
+              <div className="grid gap-4 p-4 border rounded-lg bg-slate-50">
+                <div className="grid gap-2">
+                  <Label className="flex items-center gap-2 font-medium">
+                    <MapPin className="w-4 h-4 text-green-600" /> Embarque
+                  </Label>
+                  <Select
+                    value={formData.paradaEmbarqueId || undefined}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, paradaEmbarqueId: v }))
+                    }
+                    required
+                  >
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="Selecione onde subir..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {paradasEmbarque.length > 0 ? (
+                        paradasEmbarque.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.nome}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="padrao">
+                          Ponto de Encontro Padrão
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              {/* Campo de quantidade */}
-              <div className="grid gap-2">
-                <Label htmlFor="quantidade">Quantidade de vagas</Label>
-                <Input
-                  id="quantidade"
-                  type="number"
-                  min={1}
-                  max={vagasDisponiveis}
-                  value={formData.quantidadeVagas}
-                  onChange={(e) => {
-                    const novaQuantidade = Math.min(
-                      Math.max(1, Number(e.target.value)),
-                      vagasDisponiveis
-                    );
-                    setFormData({
-                      quantidadeVagas: novaQuantidade,
-                      reservarCarro: false,
-                      valorTotal: novaQuantidade * valorPorVaga,
-                    });
-                  }}
-                  disabled={vagasDisponiveis === 0}
-                  required
-                />
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="reservarCarro"
-                    checked={formData.reservarCarro}
-                    onChange={(e) => {
-                      const novaQuantidade = e.target.checked
-                        ? vagasDisponiveis
-                        : 1;
+                <div className="grid gap-2">
+                  <Label className="flex items-center gap-2 font-medium">
+                    <MapPin className="w-4 h-4 text-red-600" /> Desembarque
+                  </Label>
+                  <Select
+                    value={formData.paradaDesembarqueId || undefined}
+                    onValueChange={(v) =>
                       setFormData((prev) => ({
                         ...prev,
-                        reservarCarro: e.target.checked,
-                        quantidadeVagas: novaQuantidade,
-                        valorTotal: novaQuantidade * valorPorVaga,
-                      }));
-                    }}
-                  />
-                  <label htmlFor="reservarCarro">Reservar {carro?.tipo}</label>
+                        paradaDesembarqueId: v,
+                      }))
+                    }
+                    required
+                  >
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="Selecione onde descer..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {paradasDesembarque.length > 0 ? (
+                        paradasDesembarque.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.nome}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="padrao">
+                          Destino Final Padrão
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Máximo permitido: {vagasDisponiveis}{" "}
-                  {vagasDisponiveis === 1 ? "vaga" : "vagas"}
-                </p>
               </div>
 
-              {/* Cálculo do valor total */}
-              <div className="rounded-lg bg-primary/5 border border-primary/20 p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Valor total</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {formData.quantidadeVagas}{" "}
-                      {formData.quantidadeVagas === 1 ? "vaga" : "vagas"} × R$
+              {/* Quantidade de Vagas */}
+              <div className="grid gap-2">
+                <Label>Quantidade de assentos</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    min={1}
+                    max={vagasDisponiveis}
+                    value={formData.quantidadeVagas}
+                    onChange={(e) => {
+                      let val = parseInt(e.target.value);
+                      if (isNaN(val)) val = 1;
+                      if (val > vagasDisponiveis) val = vagasDisponiveis;
+                      if (val < 1) val = 1;
+
+                      setFormData((prev) => ({
+                        ...prev,
+                        quantidadeVagas: val,
+                        valorTotal: val * valorPorVaga,
+                      }));
+                    }}
+                    disabled={vagasDisponiveis === 0}
+                    required
+                    className="max-w-[100px]"
+                  />
+                  <div className="flex-1 text-right">
+                    <span className="text-xs text-muted-foreground block">
+                      Total a pagar
+                    </span>
+                    <span className="text-lg font-bold text-primary">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
-                      }).format(valorPorVaga)}
-                    </p>
+                      }).format(formData.valorTotal || valorPorVaga)}
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold text-primary">
-                    {new Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(formData.quantidadeVagas * valorPorVaga)}
-                  </p>
                 </div>
               </div>
             </div>
 
             <DialogFooter>
-              <Button
-                variant="outline"
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
+              <Button variant="outline" type="button" onClick={onClose}>
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting || vagasDisponiveis === 0}
+                // TRAVA O BOTÃO SE OS CAMPOS ESTIVEREM VAZIOS
+                disabled={
+                  isSubmitting ||
+                  !formData.paradaEmbarqueId ||
+                  !formData.paradaDesembarqueId ||
+                  vagasDisponiveis === 0 ||
+                  formData.quantidadeVagas > vagasDisponiveis
+                }
               >
-                {isSubmitting ? "Processando..." : "Prosseguir para Pagamento"}
+                {isSubmitting ? "Processando..." : "Ir para Pagamento"}
               </Button>
             </DialogFooter>
           </form>

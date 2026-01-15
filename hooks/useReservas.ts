@@ -28,6 +28,8 @@ export function useReservas({ userId }: UseReservasProps) {
     quantidadeVagas: 1,
     reservarCarro: false,
     valorTotal: 0,
+    paradaEmbarqueId: "",
+    paradaDesembarqueId: "",
   });
 
   const reservasDoUsuario = useMemo(
@@ -68,7 +70,13 @@ export function useReservas({ userId }: UseReservasProps) {
 
   function openDialog(viagem: Viagem) {
     setViagemSelecionada(viagem);
-    setFormData({ quantidadeVagas: 1, reservarCarro: false, valorTotal: 0 });
+    setFormData({
+      quantidadeVagas: 1,
+      reservarCarro: false,
+      valorTotal: 0,
+      paradaEmbarqueId: "",
+      paradaDesembarqueId: "",
+    });
     setShowPayment(false);
     setReservaAtual(null);
     setIsDialogOpen(true);
@@ -79,7 +87,13 @@ export function useReservas({ userId }: UseReservasProps) {
     setViagemSelecionada(null);
     setShowPayment(false);
     setReservaAtual(null);
-    setFormData({ quantidadeVagas: 1, reservarCarro: false, valorTotal: 0 });
+    setFormData({
+      quantidadeVagas: 1,
+      reservarCarro: false,
+      valorTotal: 0,
+      paradaEmbarqueId: "",
+      paradaDesembarqueId: "",
+    });
   }
 
   async function submit(e: React.FormEvent) {

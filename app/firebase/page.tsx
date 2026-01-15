@@ -13,7 +13,22 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/Ui/tabs";
-import { Car, Calendar, Plus, BarChart3, MapPin } from "lucide-react";
+import {
+  Car,
+  Calendar,
+  Plus,
+  BarChart3,
+  MapPin,
+  Navigation,
+  Users,
+  UsersRound,
+  UsersRoundIcon,
+  Compass,
+  HomeIcon,
+  Palmtree,
+  Utensils,
+  Hotel,
+} from "lucide-react";
 import { StatsCard } from "../components/StatsCard";
 import { useAuthGuard } from "../../hooks/useAuthGuard";
 import { HeaderAdm } from "../components/HeaderAdm";
@@ -25,12 +40,16 @@ import { ViagemDialog } from "../components/ViagemDialog";
 import { ReservaDialog } from "../components/ReservaDialog";
 import { useCarros } from "../../hooks/useCarros";
 import { useViagens } from "../../hooks/useViagens";
-import { useReservas } from "../../hooks/useReservas";
 import { useFirebaseData } from "../../hooks/useFirebaseData";
 import type { TabKey } from "@/types/types";
+import { DestinosTabs } from "../components/DestinosTab";
+import { useReservas } from "@/hooks/useReservas";
+import { useDestinos } from "@/hooks/useDestinos";
+import { DestinoDialog } from "../components/DestinoDialog";
 
 export default function Home() {
   const user = useAuthGuard();
+
   const router = useRouter();
   const {
     data,
@@ -43,6 +62,9 @@ export default function Home() {
     carros,
     viagens,
     reservas,
+    destinos,
+    destinosAtivos,
+    destinosInativos,
   } = useFirebaseData();
 
   const [activeTab, setActiveTab] = useState<TabKey>("carros");
@@ -77,6 +99,14 @@ export default function Home() {
     fetchData,
     onViagemRemovida: reservasHook.fetchReservas,
   });
+
+  const destinosHook = useDestinos({
+    fetchData,
+  });
+
+  const role = user?.providerData?.some((p: any) => p.providerId === "password")
+    ? "admin"
+    : "user";
 
   useEffect(() => {
     fetchData();
@@ -114,34 +144,36 @@ export default function Home() {
       <HeaderAdm user={user} setActiveTab={setActiveTab} logout={logout} />
 
       <div className="container mx-auto px-4 lg:px-8 py-8   ">
-        <div className="hidden sm:block">
-          <div className="grid gap-4 md:grid-cols-4 mb-8 ">
-            <StatsCard
-              title="Total de Carros"
-              value={carros.length}
-              icon={<BarChart3 className="w-4 h-4" />}
-              borderColor="border-l-4 border-l-yellow-500"
-            />
-            <StatsCard
-              title="Carros Ativos"
-              value={carrosAtivos.length}
-              icon={<BarChart3 className="w-4 h-4" />}
-              borderColor="border-l-4 border-l-blue-500"
-            />
-            <StatsCard
-              title="Reservas Ativas"
-              value={reservasConfirmadas}
-              icon={<BarChart3 className="w-4 h-4" />}
-              borderColor="border-l-4 border-l-green-500"
-            />
-            <StatsCard
-              title="Viagens Abertas"
-              value={viagensAbertas}
-              icon={<BarChart3 className="w-4 h-4" />}
-              borderColor="border-l-4 border-l-red-500"
-            />
+        {role === "admin" && (
+          <div className="hidden sm:block">
+            <div className="grid gap-4 md:grid-cols-4 mb-8 ">
+              <StatsCard
+                title="Total de Carros"
+                value={carros.length}
+                icon={<BarChart3 className="w-4 h-4" />}
+                borderColor="border-l-4 border-l-yellow-500"
+              />
+              <StatsCard
+                title="Carros Ativos"
+                value={carrosAtivos.length}
+                icon={<BarChart3 className="w-4 h-4" />}
+                borderColor="border-l-4 border-l-blue-500"
+              />
+              <StatsCard
+                title="Reservas Ativas"
+                value={reservasConfirmadas}
+                icon={<BarChart3 className="w-4 h-4" />}
+                borderColor="border-l-4 border-l-green-500"
+              />
+              <StatsCard
+                title="Viagens Abertas"
+                value={viagensAbertas}
+                icon={<BarChart3 className="w-4 h-4" />}
+                borderColor="border-l-4 border-l-red-500"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <Tabs
           value={activeTab}
@@ -150,32 +182,64 @@ export default function Home() {
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div className="flex items-center">
-              <TabsList>
-                <TabsTrigger value="carros" className="gap-2">
-                  <Car className="w-4 h-4" />
-                  Carros
-                </TabsTrigger>
-                <TabsTrigger value="viagens" className="gap-2">
-                  <MapPin className="w-4 h-4" />
-                  Viagens
-                </TabsTrigger>
-                <TabsTrigger value="agendamentos" className="gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Agendamentos
-                </TabsTrigger>
-              </TabsList>
+              {role === "admin" ? (
+                <TabsList>
+                  <TabsTrigger value="usuarios" className="gap-2">
+                    <Users className="w-4 h-4" />
+                    Usuários
+                  </TabsTrigger>
+                  <TabsTrigger value="carros" className="gap-2">
+                    <Car className="w-4 h-4" />
+                    Carros
+                  </TabsTrigger>
+                  <TabsTrigger value="viagens" className="gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Viagens
+                  </TabsTrigger>
+                  <TabsTrigger value="destinos" className="gap-2">
+                    <Navigation className="w-4 h-4" />
+                    Rotas
+                  </TabsTrigger>
+                  <TabsTrigger value="agendamentos" className="gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Agendamentos
+                  </TabsTrigger>
+                </TabsList>
+              ) : (
+                <TabsList>
+                  <TabsTrigger value="viagens" className="gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Viagens
+                  </TabsTrigger>
+                  <TabsTrigger value="tours" className="gap-2">
+                    <Navigation className="w-4 h-4" />
+                    Tours
+                  </TabsTrigger>
+                  <TabsTrigger value="passeios" className="gap-2">
+                    <Compass className="w-4 h-4" />
+                    Passeios
+                  </TabsTrigger>
+                  <TabsTrigger value="pousadas" className="gap-2">
+                    <Hotel className="w-4 h-4" />
+                    Pousadas
+                  </TabsTrigger>
+                  <TabsTrigger value="restaurantes" className="gap-2">
+                    <Utensils className="w-4 h-4" />
+                    Restaurantes
+                  </TabsTrigger>
+                  <TabsTrigger value="praias" className="gap-2">
+                    <Palmtree className="w-4 h-4" />
+                    Praias
+                  </TabsTrigger>
+                  <TabsTrigger value="agendamentos" className="gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Agendamentos
+                  </TabsTrigger>
+                </TabsList>
+              )}
             </div>
 
-            {activeTab === "carros" && (
-              <Button
-                className="gap-2 w-full sm:w-auto"
-                onClick={carrosHook.openAddDialog}
-              >
-                <Plus className="w-4 h-4" />
-                Adicionar Carro
-              </Button>
-            )}
-            {activeTab === "viagens" && (
+            {activeTab === "viagens" && role === "admin" && (
               <Button
                 className="gap-2 w-full sm:w-auto"
                 onClick={viagensHook.openAddDialog}
@@ -183,6 +247,15 @@ export default function Home() {
               >
                 <Plus className="w-4 h-4" />
                 {viagemButtonLabel}
+              </Button>
+            )}
+            {activeTab === "destinos" && role === "admin" && (
+              <Button
+                className="gap-2 w-full sm:w-auto"
+                onClick={destinosHook.openAddDialog}
+              >
+                <Plus className="w-4 h-4" />
+                Adicionar Destino
               </Button>
             )}
           </div>
@@ -200,6 +273,7 @@ export default function Home() {
 
           <TabsContent value="viagens" className="mt-0">
             <ViagensTab
+              role={role}
               viagens={viagens}
               carrosAtivosCount={carrosAtivos.length}
               getCarroById={getCarroById}
@@ -210,12 +284,20 @@ export default function Home() {
             />
           </TabsContent>
 
-          <TabsContent value="paradas" className="mt-0">
-            <div className="mt-4">Paradas</div>
+          <TabsContent value="destinos" className="mt-0">
+            <DestinosTabs
+              destinosInativos={destinosInativos}
+              onAdd={destinosHook.openAddDialog}
+              onEdit={destinosHook.openEditDialog}
+              onDelete={destinosHook.remove}
+              destinosAtivos={destinosAtivos}
+              qtdDestinos={destinos.length}
+            />
           </TabsContent>
 
           <TabsContent value="agendamentos" className="mt-0">
             <AgendamentosTab
+              role={role}
               reservas={reservasHook.reservasDoUsuario}
               getViagemById={getViagemById}
               getCarroById={getCarroById}
@@ -250,6 +332,7 @@ export default function Home() {
         formData={viagensHook.formData}
         setFormData={viagensHook.setFormData}
         carros={carros}
+        destinos={destinos}
         editing={!!viagensHook.editingViagem}
         isSubmitting={viagensHook.isSubmitting}
         onSubmit={viagensHook.submit}
@@ -274,6 +357,17 @@ export default function Home() {
             reservasHook.reservaAtual?.mercadoPagoOrderId || ""
           )
         }
+      />
+
+      <DestinoDialog
+        open={destinosHook.isDialogOpen}
+        onOpenChange={destinosHook.setIsDialogOpen}
+        isSubmitting={destinosHook.isSubmitting}
+        onSubmit={destinosHook.submit}
+        onClose={destinosHook.closeDialog}
+        editing={!!destinosHook.editingDestino}
+        formData={destinosHook.formData}
+        setFormData={destinosHook.setFormData}
       />
     </div>
   );
