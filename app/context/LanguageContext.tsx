@@ -1,30 +1,31 @@
 "use client";
 
-// import { Language } from "@/lib/translations";
-import type React from "react";
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type Language = "pt" | "en" | "es";
 
-interface LanguageContextType {
+interface LanguageContextProps {
   language: Language;
   setLanguage: (lang: Language) => void;
+  isReady: boolean; // Nova propriedade global
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(
+const LanguageContext = createContext<LanguageContextProps | undefined>(
   undefined
 );
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("pt");
-  const [mounted, setMounted] = useState(false);
+  const [isReady, setIsReady] = useState(false); // Começa invisível/falso
 
   useEffect(() => {
-    const saved = localStorage.getItem("language") as Language | null;
-    if (saved && ["pt", "en", "es"].includes(saved)) {
-      setLanguageState(saved);
+    // Roda uma única vez ao carregar o site
+    const storedLang = localStorage.getItem("language") as Language;
+    if (storedLang && ["pt", "en", "es"].includes(storedLang)) {
+      setLanguageState(storedLang);
     }
-    setMounted(true);
+    // Marca como pronto imediatamente após ler o localStorage
+    setIsReady(true);
   }, []);
 
   const setLanguage = (lang: Language) => {
@@ -33,7 +34,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage, isReady }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -41,8 +42,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error("useLanguage must be used within LanguageProvider");
+  if (!context) {
+    throw new Error("useLanguage must be used within a LanguageProvider");
   }
   return context;
 }

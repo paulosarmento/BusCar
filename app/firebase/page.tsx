@@ -14,11 +14,15 @@ import {
 
 // Components
 import { Tabs, TabsContent } from "../components/Ui/tabs";
-import { HeaderAdm } from "../components/HeaderAdm";
-import { CarrosTab } from "../components/CarrosTab";
-import { ViagensTab } from "../components/ViagensTab";
-import { AgendamentosTab } from "../components/AgendamentosTab";
-import { DestinosTabs } from "../components/DestinosTab";
+import { HeaderAdm } from "./components/HeaderAdm";
+import { CarrosTab } from "./components/CarrosTab";
+import { ViagensTab } from "./components/ViagensTab";
+import { AgendamentosTab } from "./components/AgendamentosTab";
+import { DestinosTabs } from "./components/DestinosTab";
+import { AdminStats } from "./components/AdminStats";
+import { DashboardMenu } from "./components/DashboardMenu";
+import { PlaceholderTab } from "./components/PlaceholderTab";
+import { DashboardDialogs } from "./components/DashboardDialogs";
 
 // Hooks
 import { useAuthGuard } from "../../hooks/useAuthGuard";
@@ -28,10 +32,6 @@ import { useFirebaseData } from "../../hooks/useFirebaseData";
 import { useReservas } from "@/hooks/useReservas";
 import { useDestinos } from "@/hooks/useDestinos";
 import type { TabKey } from "@/types/types";
-import { AdminStats } from "./components/AdminStats";
-import { DashboardMenu } from "./components/DashboardMenu";
-import { PlaceholderTab } from "./components/PlaceholderTab";
-import { DashboardDialogs } from "./components/DashboardDialogs";
 
 export default function Home() {
   const user = useAuthGuard();
@@ -72,7 +72,7 @@ export default function Home() {
     [viagensMap]
   );
 
-  // Hooks de Lógica de Negócio
+  // Hooks de Lógica
   const carrosHook = useCarros({ fetchData });
   const reservasHook = useReservas({ userId: user?.uid });
   const viagensHook = useViagens({
@@ -113,11 +113,14 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    // AJUSTE CRÍTICO: 'pt-[80px]' é a altura aproximada do Header Principal fixo.
+    // Isso garante que o conteúdo comece exatamente onde o header principal termina.
+    <div className="min-h-screen bg-slate-50/50 pt-[80px]">
+      {/* O HeaderAdm vai ficar "preso" logo abaixo do Header Principal ao rolar */}
       <HeaderAdm user={user} setActiveTab={setActiveTab} logout={logout} />
 
-      <main className="container mx-auto px-4 lg:px-8 py-8 max-w-7xl">
-        {/* COMPONENTE 1: Estatísticas */}
+      <main className="container mx-auto px-4 lg:px-8 py-6 max-w-7xl space-y-6">
+        {/* Estatísticas */}
         {role === "admin" && (
           <AdminStats
             carros={carros}
@@ -127,12 +130,13 @@ export default function Home() {
           />
         )}
 
+        {/* Sistema de Abas e Conteúdo */}
         <Tabs
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as TabKey)}
           className="w-full space-y-6"
         >
-          {/* COMPONENTE 2: Menu e Botões */}
+          {/* Menu de Abas (Agora rola junto com a página, não fixa mais) */}
           <DashboardMenu
             role={role}
             activeTab={activeTab}
@@ -141,8 +145,8 @@ export default function Home() {
             onAddDestino={destinosHook.openAddDialog}
           />
 
-          {/* CONTEÚDO DAS ABAS */}
-          <div className="bg-transparent min-h-[400px]">
+          {/* Área de Conteúdo */}
+          <div className="bg-transparent min-h-[400px] animate-in fade-in-50 duration-500">
             <TabsContent value="carros" className="mt-0 focus-visible:ring-0">
               <CarrosTab
                 carrosAtivos={carrosAtivos}
@@ -197,7 +201,6 @@ export default function Home() {
               />
             </TabsContent>
 
-            {/* Placeholders simplificados */}
             {role === "user" && (
               <>
                 <TabsContent value="tours" className="mt-0">
@@ -221,7 +224,6 @@ export default function Home() {
         </Tabs>
       </main>
 
-      {/* COMPONENTE 3: Diálogos Agrupados */}
       <DashboardDialogs
         carrosHook={carrosHook}
         viagensHook={viagensHook}

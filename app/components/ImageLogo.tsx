@@ -1,33 +1,20 @@
+"use client";
 import Image from "next/image";
-import { useState } from "react";
 
-/**
- * Logo com verificação de carregamento e fallback
- */
-export const ImageLogo = () => {
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-
+export function ImageLogo() {
   return (
-    <a href="/" className="flex items-center gap-2">
-      {!loaded && !error && (
-        <div className="w-[170px] h-[59px] bg-white/90 animate-pulse rounded-md" />
-      )}
-
-      {!error ? (
-        <Image
-          src="/images/logo.png"
-          alt="Logo"
-          width={170}
-          height={170}
-          priority
-          onLoad={() => setLoaded(true)}
-          onError={() => setError(true)}
-          className={loaded ? "block" : "hidden"}
-        />
-      ) : (
-        <span className="text-2xl font-semibold text-[#005F8C]">BusCar</span>
-      )}
-    </a>
+    // Removida lógica de estado para evitar re-renderização visual
+    <div className="relative w-[140px] md:w-[170px] h-[48px] md:h-[59px] flex items-center select-none">
+      <Image
+        src="/images/logo.png"
+        alt="RJ Transfer Logo"
+        fill
+        sizes="(max-width: 768px) 140px, 170px"
+        style={{ objectFit: "contain", objectPosition: "left" }}
+        priority // Garante carregamento imediato (LCP)
+        quality={100}
+        draggable={false}
+      />
+    </div>
   );
-};
+}

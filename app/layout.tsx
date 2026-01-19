@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import { LanguageProvider } from "./context/LanguageContext";
+import Header from "./components/Header";
 
 export const metadata: Metadata = {
   title: "RJ Transfer — Transporte Particular para o Rio de Janeiro",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
       "Viagens com conforto e segurança para o Rio de Janeiro — Copacabana, Ipanema, Cristo Redentor, Galeão e Santos Dumont.",
     type: "website",
     locale: "pt_BR",
-    url: "https://rjtransfer.com.br", // coloque o domínio real se tiver
+    url: "https://rjtransfer.com.br",
     siteName: "RJ Transfer",
   },
   robots: {
@@ -60,7 +61,12 @@ export default function RootLayout({
         }}
       >
         <LanguageProvider>
+          {/* O Header fica aqui para persistir na navegação */}
+          <Header />
+
+          {/* O conteúdo da página muda aqui */}
           {children}
+
           <LanguageSwitcher />
         </LanguageProvider>
       </body>

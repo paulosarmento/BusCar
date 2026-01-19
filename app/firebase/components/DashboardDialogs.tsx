@@ -1,9 +1,9 @@
 // Tipar isso seria bom, mas para agilizar vou usar 'any' nos hooks
 
-import { CarroDialog } from "@/app/components/CarroDialog";
-import { DestinoDialog } from "@/app/components/DestinoDialog";
-import { ReservaDialog } from "@/app/components/ReservaDialog";
-import { ViagemDialog } from "@/app/components/ViagemDialog";
+import { CarroDialog } from "@/app/firebase/components/CarroDialog";
+import { DestinoDialog } from "@/app/firebase/components/DestinoDialog";
+import { ReservaDialog } from "@/app/firebase/components/ReservaDialog";
+import { ViagemDialog } from "@/app/firebase/components/ViagemDialog";
 
 // O ideal é criar uma interface para cada Hook
 export function DashboardDialogs({

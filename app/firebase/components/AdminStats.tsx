@@ -1,4 +1,4 @@
-import { StatsCard } from "@/app/components/StatsCard";
+import { StatsCard } from "@/app/firebase/components/StatsCard";
 import { BarChart3, Calendar, Car, MapPin, Sparkles } from "lucide-react";
 
 interface AdminStatsProps {

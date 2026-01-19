@@ -23,6 +23,13 @@ export const translationsTours = {
     faleConosco: "Fale Conosco",
     outrosDestinos: "Outros Destinos",
     conhecerMais: "Conhecer Mais",
+    tituloPrincipal: "Descubra o Rio e Região",
+    subtituloPrincipal:
+      "Roteiros prontos ou personalizados para você viver momentos inesquecíveis.",
+    cardPersonalizadoTitulo: "Crie seu Roteiro",
+    cardPersonalizadoDesc:
+      "Monte sua viagem dos sonhos escolhendo exatamente quais lugares você quer visitar.",
+
     DESTINATIONS: [
       {
         id: "tour-rio-classico",
@@ -438,6 +445,12 @@ export const translationsTours = {
     faleConosco: "Contact Us",
     outrosDestinos: "Other Destinations",
     conhecerMais: "Learn More",
+    tituloPrincipal: "Discover Rio and Region",
+    subtituloPrincipal:
+      "Ready-made or custom tours for you to live unforgettable moments.",
+    cardPersonalizadoTitulo: "Create Your Own Tour",
+    cardPersonalizadoDesc:
+      "Create your dream vacation by choosing exactly which locations you want to visit.",
 
     DESTINATIONS: [
       {
@@ -850,6 +863,12 @@ export const translationsTours = {
     faleConosco: "Contáctanos",
     outrosDestinos: "Otros Destinos",
     conhecerMais: "Conocer Más",
+    tituloPrincipal: "Descubre el Río y la Región",
+    subtituloPrincipal:
+      "Roteos prontos o personalizados para vivir momentos inolvidables.",
+    cardPersonalizadoTitulo: "Crea tu Roteo",
+    cardPersonalizadoDesc:
+      "Crea tu propia viagem dos sonhos escolhendo exatamente quais lugares quer visitar.",
 
     DESTINATIONS: [
       {

@@ -1,73 +1,69 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import axios from "axios";
-
-/**
- * Schema EXTREMAMENTE tolerante
- * (serve só para shape, não para bloquear)
- */
-const bodySchema = z.object({
-  name: z.string().optional(),
-  email: z.string().optional(),
-  phone: z.string().optional(),
-  message: z.string().optional(),
-});
-
-const normalizePhone = (phone?: string) =>
-  phone ? phone.replace(/\D/g, "") : "";
-
-const normalizeText = (value?: string, fallback = "-") =>
-  value && value.trim().length > 0 ? value.trim() : fallback;
 
 export async function POST(request: Request) {
   try {
+    const body = await request.json();
+    const { name, email, phone, message } = body;
+
+    // Verifica se a URL do Webhook existe
     if (!process.env.WEBHOOK_URL) {
-      throw new Error("WEBHOOK_URL não configurada");
+      console.error("WEBHOOK_URL não definida no .env");
+      return NextResponse.json(
+        { error: "Configuração de servidor inválida" },
+        { status: 500 }
+      );
     }
 
-    const body = await request.json();
-
-    // 🚫 NUNCA lança erro
-    const parsed = bodySchema.safeParse(body);
-
-    const data = parsed.success ? parsed.data : {};
-
-    const name = normalizeText(data.name, "Não informado");
-    const email = normalizeText(data.email, "Não informado");
-    const phone = normalizePhone(data.phone) || "Não informado";
-    const message = normalizeText(
-      data.message,
-      "Mensagem enviada sem conteúdo"
-    );
-
-    const messageData = {
-      content: "📩 Nova mensagem de contato",
+    // Monta a mensagem bonita (Embed)
+    const discordPayload = {
+      content: "📨 **Nova solicitação de Contato**",
       embeds: [
         {
-          title: "Mensagem de Contato",
-          color: 0x4983f5,
+          title: "Fale Conosco",
+          description: "Mensagem recebida através do formulário do site.",
+          color: 0x005f8c, // Cor azul da sua marca (pode mudar se quiser, ex: 0x10b981 para verde)
           fields: [
-            { name: "Nome", value: name },
-            { name: "E-mail", value: email },
-            { name: "Telefone", value: phone },
-            { name: "Mensagem", value: message },
+            {
+              name: "👤 Nome",
+              value: name || "Não informado",
+              inline: true, // Coloca lado a lado
+            },
+            {
+              name: "📧 E-mail",
+              value: email || "Não informado",
+              inline: true, // Coloca lado a lado
+            },
+            {
+              name: "📞 Telefone",
+              value: phone || "Não informado",
+              inline: false, // Linha inteira
+            },
+            {
+              name: "💬 Mensagem",
+              value: message ? `\`\`\`${message}\`\`\`` : "Sem mensagem", // Coloca em um bloco de código para destacar
+              inline: false,
+            },
           ],
+          footer: {
+            text: "RJ Transfer & Tour",
+          },
+          timestamp: new Date().toISOString(),
         },
       ],
     };
 
-    await axios.post(process.env.WEBHOOK_URL, messageData, {
+    // Envia para o Discord
+    await axios.post(process.env.WEBHOOK_URL, discordPayload, {
       headers: { "Content-Type": "application/json" },
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Erro ao processar contato:", error);
-
-    /**
-     * UX ABSOLUTA:
-     * nunca devolve erro para o usuário
-     */
-    return NextResponse.json({ success: true });
+    return NextResponse.json(
+      { error: "Erro interno ao enviar mensagem" },
+      { status: 500 }
+    );
   }
 }
